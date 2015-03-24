@@ -22,5 +22,5 @@ package org.tariel.pla.logics;
  */
 public interface IFunction
 {
-    
+    public IFunction getSub();
 }

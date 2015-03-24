@@ -22,5 +22,11 @@ package org.tariel.pla.logics;
  */
 public class Quantifer implements IFunction
 {
+
+    @Override
+    public IFunction getSub()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

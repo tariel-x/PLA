@@ -20,7 +20,7 @@ package org.tariel.pla.logics;
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
-public interface IVariable extends IFunction
+public interface IVariable
 {
     
 }

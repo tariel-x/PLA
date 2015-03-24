@@ -16,11 +16,20 @@
 
 package org.tariel.pla.logics;
 
+import java.util.List;
+
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
 public class Term implements IFunction
 {
+    private List<IVariable> variables;
+
+    @Override
+    public IFunction getSub()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
