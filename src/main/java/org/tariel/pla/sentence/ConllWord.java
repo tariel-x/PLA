@@ -15,9 +15,12 @@
  */
 package org.tariel.pla.sentence;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.*;
 
 /**
  *
@@ -145,6 +148,11 @@ public class ConllWord implements IWord
     {
 	return this.addditionalinfo;
     }
+    
+    public Link getLinktype()
+    {
+	return this.linktype;
+    }
 
     @Override
     public void setLex(String value)
@@ -241,12 +249,152 @@ public class ConllWord implements IWord
     {
 	this.addditionalinfo = value;
     }
-
+    
     @Override
-    public void fromConll(String conllstring)
+    public void setWord(String value)
     {
-        List<String> parts = Arrays.asList(conllstring.split("\t"));
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	this.word = value;
+    }
+    
+    @Override
+    public void setLinktype(Link link)
+    {
+	this.linktype = link;
     }
 
+    @Override
+    public void fromConll(String conllSentence)
+    {
+	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
+	//find root
+	int root = 0;
+	for (int i=0; i<conllstrings.size(); i++)
+	{
+	    String[] parts = conllstrings.get(i).split("\t");
+	    if (Integer.parseInt(parts[6]) == 0)
+	    {
+		//fill this with root
+		this.id = Integer.parseInt(parts[0]);
+		this.word = parts[1];
+		this.lex = parts[2];
+		this.linktype = ConllWord.decodeLink(parts[7]);
+		if (this.Pos.contains(parts[3]))
+		    this.pos = parts[3];
+		else
+		    this.pos = "OTHER";
+		this.decodeParams(parts[5]);
+		root = i;
+		break;
+	    }
+	}
+	this.fromConll(conllSentence, root+1);
+	System.out.println("end");
+    }
+  
+    public void decodeParams(String params)
+    {
+	List<String> parts = Arrays.asList(params.split("|"));
+	for (Field field : IWord.class.getDeclaredFields())
+	{
+	    if (field.getName().contains("Variants"))
+	    {
+		try
+		{
+		    String name = field.getName().replace("Variants", "");
+		    List<String> values = Arrays.asList((String[])field.get(this));
+		    for (String part : parts)
+		    {
+			if (values.contains(part))
+			{
+			    Field thisField = ConllWord.class.getField(name.toLowerCase());
+			    thisField.set(this, part);
+			}
+		    } 
+		} catch (Exception ex)
+		{
+		    ex.printStackTrace();
+		}
+	    }
+	}
+    }
+    
+    public static Link decodeLink(String link)
+    {
+	switch (link)
+	{
+	    case "ROOT":
+		return Link.ROOT;
+	    case "SUBJ":
+		return Link.SUBJ;
+	    case "OBJ":
+		return Link.OBJ;
+	    case "AMOD":
+		return Link.AMOD;
+	    case "PREP":
+		return Link.PREP;
+	    case "POBJ":
+		return Link.POBJ;
+	    case "NEG":
+		return Link.NEG;
+	    default:
+		return Link.NONE;
+	}
+    }
+    
+    public void fromConll(String conllSentence, int me)
+    {
+	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
+	//find every child word
+	int root = 0;
+	this.subwords = new ArrayList<>();
+	for (int i=0; i<conllstrings.size(); i++)
+	{
+	    String[] parts = conllstrings.get(i).split("\t");
+	    if (Integer.parseInt(parts[6]) == me)
+	    {
+		ConllWord tmp = new ConllWord();
+		//fill new child
+		tmp.id = Integer.parseInt(parts[0]);
+		tmp.setWord(parts[1]);
+		tmp.setLex(parts[2]);
+		tmp.setLinktype(ConllWord.decodeLink(parts[7]));
+		if (this.Pos.contains(parts[3]))
+		    tmp.setPos(parts[3]);
+		else
+		    tmp.setPos("OTHER");
+		tmp.decodeParams(parts[5]);
+		tmp.fromConll(conllSentence, i+1);
+		this.subwords.add(tmp);
+	    }
+	}
+    }
+
+    @Override
+    public List<IWord> getSubWords(Link linktype)
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+}
+
+class SimpleWord
+{
+    public int id;
+    public int parent;
+    public String word;
+    public String lex;
+    public String params;
+    public String link;
+    public String part;
+    
+    public SimpleWord(String instr)
+    {
+	String[] parts = instr.split("\t");
+	this.id = Integer.parseInt(parts[0]);
+	this.parent = Integer.parseInt(parts[6]);
+	this.word = parts[1];
+	this.lex = parts[2];
+	this.params = parts[5];
+	this.link = parts[7];
+	this.part = parts[3];
+    }
 }

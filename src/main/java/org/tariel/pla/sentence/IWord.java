@@ -15,6 +15,7 @@
  */
 package org.tariel.pla.sentence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,23 +24,136 @@ import java.util.List;
  */
 public interface IWord
 {
-
+    /**
+     * Link with parent word
+     */
     enum Link
     {
-
+	ROOT,
         SUBJ,
         OBJ,
         AMOD,
         PREP,
         POBJ,
-        NEG
+        NEG,
+	NONE
     }
+    
+    /**
+     * Part of speech types
+     */   
+    public final List<String> Pos = new ArrayList<String>()
+	{
+	    {
+		add("A");
+		add("ADV");
+		add("ADVPRO");
+		add("ANUM");
+		add("APRO");
+		add("COM");
+		add("CONJ");
+		add("INTJ");
+		add("NUM");
+		add("PART");
+		add("PR");
+		add("S");
+		add("SPRO");
+		add("V");
+	    }
+	};
+    
+    public final String[] TenseVariants = 
+    {
+	"PST",
+        "NPST",
+        "PRS"
+    };
+    
+    public final String[] CaseVariants = 
+    {
+	"NOM",
+        "GEN",
+        "DAT",
+        "ACC",
+        "INS",
+        "PREP",
+        "GEN2",
+        "LOC",
+    };
+    
+    public final String[] NumberVariants = 
+    {
+	"SG",
+        "PL",
+    };
+    
+    public final String[] VerbReprVariants = 
+    {
+	"INF",
+        "ADJP",
+        "ADVP",
+        "REAL",
+        "IMP",
+    };
+    
+    public final String[] AdjDegreeVariants = 
+    {
+	"COMP",
+        "SUPL",
+    };
+    
+    public final String[] VerbFaceVariants = 
+    {
+	"1P",
+        "2P",
+        "3P",
+    };
+    
+    public final String[] GenderVariants = 
+    {
+	"F",
+        "M",
+        "N",
+    };
+    
+    public final String[] AspectVariants = 
+    {
+	"IMPERF",
+        "PERF",
+    };
+    
+    public final String[] VoiceVariants = 
+    {
+	"PASS",
+    };
+    
+    public final String[] AnimacyVariants = 
+    {
+	"ANIM",
+        "INAN",
+    };
+    
 
+    /**
+     * Returns all one level below words
+     * @return list of words
+     */
     public List<IWord> getSubWords();
+    
+    /**
+     * Returns all one level below words with mentined linktype
+     * @param linktype
+     * @return list of words
+     */
+    public List<IWord> getSubWords(Link linktype);
 
     public Link getLink();
 
-    public void fromConll(String conllstring);
+    /**
+     * Parses CONLL-coded sentence in to words tree
+     * @param conllSentence 
+     */
+    public void fromConll(String conllSentence);
 
     /**
      * Get origin word
@@ -84,8 +198,12 @@ public interface IWord
     public String getTransitivity();
 
     public String getAdditionalInfo();
+    
+    public Link getLinktype();
 
     public void setLex(String value);
+    
+    public void setWord(String value);
 
     public void setPos(String value);
 
@@ -116,4 +234,6 @@ public interface IWord
     public void setTransitivity(String value);
 
     public void setAdditionalInfo(String value);
+    
+    public void setLinktype(Link link);
 }
