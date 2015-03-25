@@ -22,5 +22,7 @@ package org.tariel.pla.sentence;
  */
 public interface ISentence
 {
+    public IWord getRoot();
     
+    public void fromConll(String conllstring);
 }
