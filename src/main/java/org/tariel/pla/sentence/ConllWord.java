@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.*;
 import org.apache.commons.lang.StringUtils;
+import org.tariel.pla.logics.IFunction;
 
 /**
  *
@@ -376,27 +377,10 @@ public class ConllWord implements IWord
     {
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-}
-
-class SimpleWord
-{
-    public int id;
-    public int parent;
-    public String word;
-    public String lex;
-    public String params;
-    public String link;
-    public String part;
     
-    public SimpleWord(String instr)
+    public IFunction toPLA()
     {
-	String[] parts = instr.split("\t");
-	this.id = Integer.parseInt(parts[0]);
-	this.parent = Integer.parseInt(parts[6]);
-	this.word = parts[1];
-	this.lex = parts[2];
-	this.params = parts[5];
-	this.link = parts[7];
-	this.part = parts[3];
+	
+	return null;
     }
 }

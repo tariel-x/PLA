@@ -17,6 +17,7 @@ package org.tariel.pla.sentence;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.tariel.pla.logics.IFunction;
 
 /**
  *
@@ -154,6 +155,12 @@ public interface IWord
      * @param conllSentence 
      */
     public void fromConll(String conllSentence);
+    
+    /**
+     * Converts sentence structure into PLA formula
+     * @return PLA formula
+     */
+    public IFunction toPLA();
 
     /**
      * Get origin word
