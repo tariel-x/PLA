@@ -43,6 +43,7 @@ public class ConllWord implements IWord
     public String adjform;
     public String adjdegree;
     public String verbface;
+    public String verbrepr;
     public String gender;
     public String aspect;
     public String voise;
@@ -289,7 +290,6 @@ public class ConllWord implements IWord
 	    }
 	}
 	this.fromConll(conllSentence, root+1);
-	System.out.println("end");
     }
   
     public void decodeParams(String params)

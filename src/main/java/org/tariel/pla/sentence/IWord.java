@@ -127,7 +127,7 @@ public interface IWord
 	"PASS",
     };
     
-    public final String[] AnimacyVariants = 
+    public final String[] AnimacityVariants = 
     {
 	"ANIM",
         "INAN",
