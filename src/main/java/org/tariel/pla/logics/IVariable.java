@@ -22,5 +22,7 @@ package org.tariel.pla.logics;
  */
 public interface IVariable
 {
+    public void setName(String name);
     
+    public String getName();
 }

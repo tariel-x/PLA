@@ -16,13 +16,13 @@
 package org.tariel.pla.sentence;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.*;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.Quantifer;
+import org.tariel.pla.logics.Term;
 
 /**
  *
@@ -67,91 +67,109 @@ public class ConllWord implements IWord
         return this.linktype;
     }
     
+    @Override
     public String getWord()
     {
 	return this.word;
     }
 
+    @Override
     public String getLex()
     {
 	return this.lex;
     }
 
+    @Override
     public String getPos()
     {
 	return this.pos;
     }
 
+    @Override
     public String getTense()
     {
 	return this.tense;
     }
 
+    @Override
     public String getCase()
     {
 	return this.lcase;
     }
 
+    @Override
     public String getNumber()
     {
 	return this.number;
     }
 
+    @Override
     public String getVerbRepr()
     {
 	return this.verberp;
     }
 
+    @Override
     public String getVerbMood()
     {
 	return this.verbmod;
     }
 
+    @Override
     public String getAdjForm()
     {
 	return this.adjform;
     }
 
+    @Override
     public String getAdjDegree()
     {
 	return this.adjdegree;
     }
 
+    @Override
     public String getVerbFace()
     {
 	return this.verbface;
     }
 
+    @Override
     public String getGender()
     {
 	return this.gender;
     }
 
+    @Override
     public String getAspect()
     {
 	return this.aspect;
     }
 
+    @Override
     public String getVoice()
     {
 	return this.voise;
     }
 
+    @Override
     public String getAnimacy()
     {
 	return this.animacity;
     }
 
+    @Override
     public String getTransitivity()
     {
 	return this.transitivity;
     }
 
+    @Override
     public String getAdditionalInfo()
     {
 	return this.addditionalinfo;
     }
     
+    @Override
     public Link getLinktype()
     {
 	return this.linktype;
@@ -313,7 +331,7 @@ public class ConllWord implements IWord
 			    thisField.set(this, part);
 			}
 		    } 
-		} catch (Exception ex)
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex)
 		{
 		    ex.printStackTrace();
 		}
@@ -375,12 +393,43 @@ public class ConllWord implements IWord
     @Override
     public List<IWord> getSubWords(Link linktype)
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	//TODO: make optimisation with preindexing
+	List<IWord> retwords = new ArrayList<>();
+	for (IWord subword : this.subwords)
+	{
+	    if (subword.getLink() == linktype)
+		retwords.add(subword);
+	}
+	return retwords;
     }
     
+    @Override
     public IFunction toPLA()
     {
-	
+	if (this.pos.equals("V"))
+	{
+	    List<IWord> subjects = this.getSubWords(IWord.Link.SUBJ);
+	    Term predicate = null;
+	    if (subjects.size() > 0)
+	    {
+		Quantifer quantifer = new Quantifer();
+		predicate = new Term();
+		predicate.addVar(quantifer.getVar());
+		predicate.setName(this.lex);
+		quantifer.addSub(predicate);
+	    }
+	}
+	else if (this.pos.equals("S"))
+	{
+	    
+	}
+	else
+	{
+	    for (IWord subword : this.subwords)
+	    {
+		subword.toPLA();
+	    }
+	}
 	return null;
     }
 }

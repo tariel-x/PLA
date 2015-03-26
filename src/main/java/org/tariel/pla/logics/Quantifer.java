@@ -22,9 +22,27 @@ package org.tariel.pla.logics;
  */
 public class Quantifer implements IFunction
 {
+    private IVariable var;
+    
+    public Quantifer()
+    {
+	this.var = new LogicVariable();
+	this.var.setName(java.util.UUID.randomUUID().toString());
+    }
+    
+    public IVariable getVar()
+    {
+	return this.var;
+    }
 
     @Override
     public IFunction getSub()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addSub(IFunction sub)
     {
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -28,5 +28,11 @@ public class LogicFunction implements IFunction
     {
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void addSub(IFunction sub)
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

@@ -23,4 +23,18 @@ package org.tariel.pla.logics;
 public class LogicVariable implements IVariable
 {
     
+    private String name;
+
+    @Override
+    public void setName(String name)
+    {
+	this.name = name;
+    }
+
+    @Override
+    public String getName()
+    {
+	return this.name;
+    }
+    
 }

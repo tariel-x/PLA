@@ -25,9 +25,36 @@ import java.util.List;
 public class Term implements IFunction
 {
     private List<IVariable> variables;
+    private String name;
+    
+    public List<IVariable> getVars()
+    {
+	return this.variables;
+    }
+    
+    public void addVar(IVariable newvar)
+    {
+	this.variables.add(newvar);
+    }
+    
+    public void setName(String name)
+    {
+	this.name = name;
+    }
+    
+    public String getName()
+    {
+	return this.name;
+    }
 
     @Override
     public IFunction getSub()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addSub(IFunction sub)
     {
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
