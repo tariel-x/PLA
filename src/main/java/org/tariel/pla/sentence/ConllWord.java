@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.*;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -31,26 +32,26 @@ public class ConllWord implements IWord
     public List<IWord> subwords;
     public Link linktype;
     
-    private String word;
-    private String lex;
-    private String pos;
-    private String tense;
-    private String lcase;
-    private String number;
-    private String verberp;
-    private String verbmod;
-    private String adjform;
-    private String adjdegree;
-    private String verbface;
-    private String gender;
-    private String aspect;
-    private String voise;
-    private String animacity;
-    private String transitivity;
-    private String addditionalinfo;
-    private String other;
+    public String word;
+    public String lex;
+    public String pos;
+    public String tense;
+    public String lcase;
+    public String number;
+    public String verberp;
+    public String verbmod;
+    public String adjform;
+    public String adjdegree;
+    public String verbface;
+    public String gender;
+    public String aspect;
+    public String voise;
+    public String animacity;
+    public String transitivity;
+    public String addditionalinfo;
+    public String other;
     
-    private Integer id;
+    public Integer id;
     
     @Override
     public List<IWord> getSubWords()
@@ -293,7 +294,7 @@ public class ConllWord implements IWord
   
     public void decodeParams(String params)
     {
-	List<String> parts = Arrays.asList(params.split("|"));
+	List<String> parts = Arrays.asList( StringUtils.split(params, "|"));
 	for (Field field : IWord.class.getDeclaredFields())
 	{
 	    if (field.getName().contains("Variants"))
@@ -306,7 +307,8 @@ public class ConllWord implements IWord
 		    {
 			if (values.contains(part))
 			{
-			    Field thisField = ConllWord.class.getField(name.toLowerCase());
+			    String fieldName = name.toLowerCase();
+			    Field thisField = ConllWord.class.getField(fieldName);
 			    thisField.set(this, part);
 			}
 		    } 

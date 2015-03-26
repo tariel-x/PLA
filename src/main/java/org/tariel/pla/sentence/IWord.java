@@ -69,7 +69,7 @@ public interface IWord
         "PRS"
     };
     
-    public final String[] CaseVariants = 
+    public final String[] LCaseVariants = 
     {
 	"NOM",
         "GEN",
