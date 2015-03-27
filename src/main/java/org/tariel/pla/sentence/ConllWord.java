@@ -421,7 +421,10 @@ public class ConllWord implements IWord
 	}
 	else if (this.pos.equals("S"))
 	{
-	    
+	    Quantifer quant = new Quantifer();
+	    Term word = new Term();
+	    word.setName(this.lex);
+	    quant.addSub(word);
 	}
 	else
 	{
