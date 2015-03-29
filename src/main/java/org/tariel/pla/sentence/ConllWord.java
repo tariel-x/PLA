@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.LogicFunction;
 import org.tariel.pla.logics.Quantifer;
 import org.tariel.pla.logics.Term;
 
@@ -410,13 +411,53 @@ public class ConllWord implements IWord
 	{
 	    List<IWord> subjects = this.getSubWords(IWord.Link.SUBJ);
 	    Term predicate = null;
-	    if (subjects.size() > 0)
+	    for (IWord subj : subjects)
 	    {
-		Quantifer quantifer = new Quantifer();
-		predicate = new Term();
-		predicate.addVar(quantifer.getVar());
-		predicate.setName(this.lex);
-		quantifer.addSub(predicate);
+		if (subj.getPos().equals("S"))
+		{
+		    //Subject term, introducing object
+		    Quantifer quantifer = new Quantifer();
+		    predicate = new Term();
+		    predicate.addVar(quantifer.getVar());
+		    predicate.setName(subj.getLex());
+		    
+		    List<IWord> objects = this.getSubWords(IWord.Link.POBJ);
+		    for (IWord obj : objects)
+		    {
+			if (obj.getPos().equals("S"))
+			{
+			    //Object term
+			    Quantifer quant_obj = new Quantifer();
+			    Term obj_predic = new Term();
+			    obj_predic.addVar(quant_obj.getVar());
+			    obj_predic.setName(obj.getLex());
+			    //Predicate term
+			    Term predic_predic = new Term();
+			    predic_predic.setName(this.getLex());
+			    predic_predic.addVar(quantifer.getVar());
+			    predic_predic.addVar(quant_obj.getVar());
+			    //AND for Object and Predicate
+			    LogicFunction land_pred_obj = new LogicFunction();
+			    land_pred_obj.addSub(obj_predic);
+			    land_pred_obj.addSub(predic_predic);
+			    //Object quantifer and previous AND
+			    quant_obj.addSub(land_pred_obj);
+			    //AND for previous quantifer and Subject term
+			    LogicFunction land_subj_pred = new LogicFunction();
+			    land_subj_pred.addSub(predicate);
+			    land_subj_pred.addSub(quant_obj);
+			    //Subject first quantifer
+			    quantifer.addSub(land_subj_pred);
+			    IFunction total = null;
+			    for (IWord subword : this.subwords)
+			    {
+				ConllWord conll_sub = (ConllWord)subword;
+				total = conll_sub.toPLA(quantifer);
+			    }
+			    return total;
+			}
+		    }
+		}
 	    }
 	}
 	else if (this.pos.equals("S"))
@@ -425,6 +466,13 @@ public class ConllWord implements IWord
 	    Term word = new Term();
 	    word.setName(this.lex);
 	    quant.addSub(word);
+	    IFunction total = null;
+	    for (IWord subword : this.subwords)
+	    {
+		ConllWord conll_sub = (ConllWord)subword;
+		total = conll_sub.toPLA(quant);
+	    }
+	    return total;
 	}
 	else
 	{
@@ -434,5 +482,23 @@ public class ConllWord implements IWord
 	    }
 	}
 	return null;
+    }
+    
+    /**
+     * Finds logic constructions and returns input formula AND subformula
+     * @param current
+     * @return 
+     */
+    public IFunction toPLA(IFunction current)
+    {
+	IFunction new_funcs = this.toPLA();
+	if (new_funcs != null)
+	{
+	    LogicFunction conjuct = new LogicFunction();
+	    conjuct.addSub(current);
+	    conjuct.addSub(new_funcs);
+	    return conjuct;
+	}
+	return current;
     }
 }
