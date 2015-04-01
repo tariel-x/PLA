@@ -436,18 +436,20 @@ public class ConllWord implements IWord
 			    predic_predic.setName(this.getLex());
 			    predic_predic.addVar(quantifer.getVar());
 			    predic_predic.addVar(quant_obj.getVar());
-			    //AND for Object and Predicate
-			    LogicFunction land_pred_obj = new LogicFunction();
-			    land_pred_obj.addSub(obj_predic);
-			    land_pred_obj.addSub(predic_predic);
-			    //Object quantifer and previous AND
-			    quant_obj.addSub(land_pred_obj);
-			    //AND for previous quantifer and Subject term
-			    LogicFunction land_subj_pred = new LogicFunction();
-			    land_subj_pred.addSub(predicate);
-			    land_subj_pred.addSub(quant_obj);
-			    //Subject first quantifer
-			    quantifer.addSub(land_subj_pred);
+			    
+			    //Object quantifer for Object and Predicate
+			    quant_obj.addSub(obj_predic);
+			    quant_obj.addSub(predic_predic);
+
+			    //Subject first for previous quantifer and Subject term
+			    quantifer.addSub(predicate);
+			    quantifer.addSub(quant_obj);
+			    
+			    //TODO: вынести по возможности конструирование формулы из условия
+			    //чтобы при отсутствии pobj формула сохранялась
+			    
+			    //TODO: смотреть вглубь в поисках pobj
+			    
 			    IFunction total = null;
 			    for (IWord subword : this.subwords)
 			    {
