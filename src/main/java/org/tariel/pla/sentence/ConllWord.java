@@ -413,59 +413,78 @@ public class ConllWord implements IWord
 	    //P(?)
 	    Term predic_predic = new Term();
 	    predic_predic.setName(this.getLex());
-	    //Search for noun subjects
-	    List<IWord> subjects = this.getSubWords(IWord.Link.SUBJ);
+	    
+	    //variables for ∃xSx
+	    Quantifer quant_subj = null;
 	    Term subj_term = null;
-	    //Find subject
+	    
+	    //variables for ∃xOx
+	    Quantifer quant_obj = null;
+	    Term obj_predic = null;
+	    
+	    //Find verb's subject
+	    //construnct ∃xSx
 	    IWord subj_word = this.getSubject();
 	    if (!subj_word.isBlank())
 	    {
 		//Subject term with quantifer, introducing subject
 		//∃x
-		Quantifer quantifer = new Quantifer();
+		quant_subj = new Quantifer();
 		//Sx
 		subj_term = new Term();
-		subj_term.addVar(quantifer.getVar());
+		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
-		//Search for verb's objects
-		IWord obj_word = this.getObject();
-		if (!obj_word.isBlank())
-		{
-		    //Object term with quantifer
-		    //∃y
-		    Quantifer quant_obj = new Quantifer();
-		    //Oy
-		    Term obj_predic = new Term();
-		    obj_predic.addVar(quant_obj.getVar());
-		    obj_predic.setName(obj_word.getLex());
-
-		    //Add subject and object variables to predicate
-		    //P(?) -> Pxy
-		    predic_predic.addVar(quantifer.getVar());
-		    predic_predic.addVar(quant_obj.getVar());
-
-		    //Object quantifer for Object and Predicate
-		    //∃y(Oy ⋀ Pxy)
-		    quant_obj.addSub(obj_predic);
-		    quant_obj.addSub(predic_predic);
-
-		    //Subject first for previous quantifer and Subject term
-		    //∃x(Sx ⋀ ∃y(Oy ⋀ Pxy))
-		    quantifer.addSub(subj_term);
-		    quantifer.addSub(quant_obj);
-
-		    //TODO: вынести по возможности конструирование формулы из условия
-		    //чтобы при отсутствии pobj формула сохранялась
-
-		    IFunction total = null;
-		    for (IWord subword : this.subwords)
-		    {
-			ConllWord conll_sub = (ConllWord)subword;
-			total = conll_sub.toPLA(quantifer);
-		    }
-		    return total;
-		}
 	    }
+	    
+	    //Search for verb's objects
+	    //constructs ∃yOy
+	    IWord obj_word = this.getObject();
+	    if (!obj_word.isBlank())
+	    {
+		//Object term with quantifer
+		//∃y
+		quant_obj = new Quantifer();
+		//Oy
+		obj_predic = new Term();
+		obj_predic.addVar(quant_obj.getVar());
+		obj_predic.setName(obj_word.getLex());
+	    }
+	    
+	    //Add subject and object variables to predicate (if they exist)
+	    //P(?) -> Pxy or Px or Py or nothing
+	    if (quant_subj != null)
+		predic_predic.addVar(quant_subj.getVar());
+	    if (quant_obj != null)
+		predic_predic.addVar(quant_obj.getVar());
+
+	    //Object quantifer for Object and Predicate
+	    //∃y(Oy ⋀ Pxy) or nothing
+	    if (quant_obj != null)
+	    {
+		quant_obj.addSub(obj_predic);
+		quant_obj.addSub(predic_predic);
+	    }
+	    
+	    //Subject first for previous quantifer and Subject term
+	    //∃x(Sx ⋀ ∃y(Oy ⋀ Pxy)) or ∃x(Sx ⋀ Px)
+	    if (quant_obj != null)
+	    {
+		quant_subj.addSub(subj_term);
+		quant_subj.addSub(quant_obj);
+	    }
+	    else
+	    {
+		quant_subj.addSub(subj_term);
+		quant_subj.addSub(predic_predic);
+	    }
+
+	    IFunction total = null;
+	    for (IWord subword : this.subwords)
+	    {
+		ConllWord conll_sub = (ConllWord)subword;
+		total = conll_sub.toPLA(quant_subj);
+	    }
+	    return total;
 	    
 	}
 	else if (this.pos.equals("S"))
