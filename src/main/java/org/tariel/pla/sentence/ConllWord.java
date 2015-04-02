@@ -403,64 +403,70 @@ public class ConllWord implements IWord
 	}
 	return retwords;
     }
-    
+        
     @Override
     public IFunction toPLA()
     {
 	if (this.pos.equals("V"))
 	{
+	    //Predicate term (verb)
+	    //P(?)
+	    Term predic_predic = new Term();
+	    predic_predic.setName(this.getLex());
+	    //Search for noun subjects
 	    List<IWord> subjects = this.getSubWords(IWord.Link.SUBJ);
-	    Term predicate = null;
-	    for (IWord subj : subjects)
+	    Term subj_term = null;
+	    //Find subject
+	    IWord subj_word = this.getSubject();
+	    if (!subj_word.isBlank())
 	    {
-		if (subj.getPos().equals("S"))
+		//Subject term with quantifer, introducing subject
+		//∃x
+		Quantifer quantifer = new Quantifer();
+		//Sx
+		subj_term = new Term();
+		subj_term.addVar(quantifer.getVar());
+		subj_term.setName(subj_word.getLex());
+		//Search for verb's objects
+		IWord obj_word = this.getObject();
+		if (!obj_word.isBlank())
 		{
-		    //Subject term, introducing object
-		    Quantifer quantifer = new Quantifer();
-		    predicate = new Term();
-		    predicate.addVar(quantifer.getVar());
-		    predicate.setName(subj.getLex());
-		    
-		    List<IWord> objects = this.getSubWords(IWord.Link.POBJ);
-		    for (IWord obj : objects)
-		    {
-			if (obj.getPos().equals("S"))
-			{
-			    //Object term
-			    Quantifer quant_obj = new Quantifer();
-			    Term obj_predic = new Term();
-			    obj_predic.addVar(quant_obj.getVar());
-			    obj_predic.setName(obj.getLex());
-			    //Predicate term
-			    Term predic_predic = new Term();
-			    predic_predic.setName(this.getLex());
-			    predic_predic.addVar(quantifer.getVar());
-			    predic_predic.addVar(quant_obj.getVar());
-			    
-			    //Object quantifer for Object and Predicate
-			    quant_obj.addSub(obj_predic);
-			    quant_obj.addSub(predic_predic);
+		    //Object term with quantifer
+		    //∃y
+		    Quantifer quant_obj = new Quantifer();
+		    //Oy
+		    Term obj_predic = new Term();
+		    obj_predic.addVar(quant_obj.getVar());
+		    obj_predic.setName(obj_word.getLex());
 
-			    //Subject first for previous quantifer and Subject term
-			    quantifer.addSub(predicate);
-			    quantifer.addSub(quant_obj);
-			    
-			    //TODO: вынести по возможности конструирование формулы из условия
-			    //чтобы при отсутствии pobj формула сохранялась
-			    
-			    //TODO: смотреть вглубь в поисках pobj
-			    
-			    IFunction total = null;
-			    for (IWord subword : this.subwords)
-			    {
-				ConllWord conll_sub = (ConllWord)subword;
-				total = conll_sub.toPLA(quantifer);
-			    }
-			    return total;
-			}
+		    //Add subject and object variables to predicate
+		    //P(?) -> Pxy
+		    predic_predic.addVar(quantifer.getVar());
+		    predic_predic.addVar(quant_obj.getVar());
+
+		    //Object quantifer for Object and Predicate
+		    //∃y(Oy ⋀ Pxy)
+		    quant_obj.addSub(obj_predic);
+		    quant_obj.addSub(predic_predic);
+
+		    //Subject first for previous quantifer and Subject term
+		    //∃x(Sx ⋀ ∃y(Oy ⋀ Pxy))
+		    quantifer.addSub(subj_term);
+		    quantifer.addSub(quant_obj);
+
+		    //TODO: вынести по возможности конструирование формулы из условия
+		    //чтобы при отсутствии pobj формула сохранялась
+
+		    IFunction total = null;
+		    for (IWord subword : this.subwords)
+		    {
+			ConllWord conll_sub = (ConllWord)subword;
+			total = conll_sub.toPLA(quantifer);
 		    }
+		    return total;
 		}
 	    }
+	    
 	}
 	else if (this.pos.equals("S"))
 	{
@@ -502,5 +508,42 @@ public class ConllWord implements IWord
 	    return conjuct;
 	}
 	return current;
+    }
+
+    @Override
+    public IWord getSubject() {
+	List<IWord> objects = this.getSubWords(IWord.Link.SUBJ);
+	for (IWord obj : objects)
+	{
+	    //If object is noun - it is good
+	    if (obj.getPos().equals("S"))
+	    {
+		return obj;
+	    }
+	}
+	IWord ret = new ConllWord();
+	ret.setLinktype(IWord.Link.NONE);
+	return ret;
+    }
+
+    @Override
+    public IWord getObject() {
+	List<IWord> objects = this.getSubWords(IWord.Link.OBJ);
+	for (IWord obj : objects)
+	{
+	    //If object is noun - it is good
+	    if (obj.getPos().equals("S"))
+	    {
+		return obj;
+	    }
+	}
+	IWord ret = new ConllWord();
+	ret.setLinktype(IWord.Link.NONE);
+	return ret;
+    }
+
+    @Override
+    public Boolean isBlank() {
+	return (this.linktype == IWord.Link.NONE);
     }
 }

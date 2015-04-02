@@ -147,6 +147,26 @@ public interface IWord
      * @return list of words
      */
     public List<IWord> getSubWords(Link linktype);
+    
+    /**
+     * Returns subject of current word (if it is verb) or damn object if doesn't exist
+     * @Nullable
+     * @return verb's subject
+     */
+    public IWord getSubject();
+    
+    /**
+     * Returns object of current word (if it is verb) or damn object if doesn't exist
+     * @Nullable
+     * @return verb's object
+     */
+    public IWord getObject();
+    
+    /**
+     * Check if it is damn object
+     * @return 
+     */
+    public Boolean isBlank();
 
     public Link getLink();
 
