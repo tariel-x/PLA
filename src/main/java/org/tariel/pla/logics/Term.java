@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.tariel.pla.logics;
 
 import java.util.List;
@@ -26,37 +25,37 @@ public class Term implements IFunction
 {
     private List<IVariable> variables;
     private String name;
-    
+
     public List<IVariable> getVars()
     {
 	return this.variables;
     }
-    
+
     public void addVar(IVariable newvar)
     {
 	this.variables.add(newvar);
     }
-    
+
     public void setName(String name)
     {
 	this.name = name;
     }
-    
+
     public String getName()
     {
 	return this.name;
     }
 
     @Override
-    public IFunction getSub()
+    public void addSub(IFunction sub)
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void addSub(IFunction sub)
+    public List<IFunction> getSub()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
 }

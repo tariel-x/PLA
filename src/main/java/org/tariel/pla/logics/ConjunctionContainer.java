@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.tariel.pla.logics;
 
 import java.util.ArrayList;
@@ -21,26 +20,17 @@ import java.util.List;
 
 /**
  *
- * @author Nikita Gerasimov <tariel-x@ya.ru>
+ * @author Nikita Gerasimov <n@tariel.ru>
  */
-public class Quantifer implements IFunction
+public class ConjunctionContainer implements IFunction
 {
-    private IVariable var;
-    
     private List<IFunction> sub_functions;
     
-    public Quantifer()
+    public ConjunctionContainer()
     {
-	this.var = new LogicVariable();
-	this.var.setName(java.util.UUID.randomUUID().toString());
 	this.sub_functions = new ArrayList<>();
     }
     
-    public IVariable getVar()
-    {
-	return this.var;
-    }
-
     @Override
     public List<IFunction> getSub() {
 	return this.sub_functions;
@@ -50,5 +40,5 @@ public class Quantifer implements IFunction
     public void addSub(IFunction sub) {
 	this.sub_functions.add(sub);
     }
-    
+
 }

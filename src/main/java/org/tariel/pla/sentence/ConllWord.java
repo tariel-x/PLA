@@ -415,7 +415,7 @@ public class ConllWord implements IWord
 	    predic_predic.setName(this.getLex());
 	    
 	    //variables for ∃xSx
-	    Quantifer quant_subj = null;
+	    Quantifer quant_subj = null;//Base quantifer - root element for this part
 	    Term subj_term = null;
 	    
 	    //variables for ∃xOx
@@ -434,6 +434,11 @@ public class ConllWord implements IWord
 		subj_term = new Term();
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
+	    }
+	    else
+	    {
+		//nothing will be happened here
+		return null;
 	    }
 	    
 	    //Search for verb's objects
@@ -479,12 +484,12 @@ public class ConllWord implements IWord
 	    }
 
 	    IFunction total = null;
-	    for (IWord subword : this.subwords)
+	    IFunction subj_underlogic = subj_word.toPLA();
+	    if (!obj_word.isBlank())
 	    {
-		ConllWord conll_sub = (ConllWord)subword;
-		total = conll_sub.toPLA(quant_subj);
+		IFunction sobj_underlogic = obj_word.toPLA();
 	    }
-	    return total;
+	    
 	    
 	}
 	else if (this.pos.equals("S"))

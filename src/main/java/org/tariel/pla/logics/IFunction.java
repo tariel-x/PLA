@@ -16,13 +16,15 @@
 
 package org.tariel.pla.logics;
 
+import java.util.List;
+
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
 public interface IFunction
 {
-    public IFunction getSub();
+    public List<IFunction> getSub();
     
     public void addSub(IFunction sub);
 }
