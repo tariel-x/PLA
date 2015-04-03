@@ -515,6 +515,7 @@ public class ConllWord implements IWord
 	    {
 		total.addSub(obj_underlogic);
 	    }
+	    total = this.subsToPla(total);
 	    //if total contains only current result and no sublogic - return only current
 	    if (total.getSub().size() > 1)
 	    {
@@ -533,11 +534,7 @@ public class ConllWord implements IWord
 
 	    IFunction total = new ConjunctionContainer();
 	    total.addSub(quant);
-	    for (IWord subword : this.subwords)
-	    {
-		ConllWord conll_sub = (ConllWord) subword;
-		total.addSub(conll_sub.toPLA());
-	    }
+	    total = this.subsToPla(total);
 	    //if total contains only current result and no sublogic - return only current
 	    if (total.getSub().size() > 1)
 	    {
@@ -549,11 +546,7 @@ public class ConllWord implements IWord
 	} else
 	{
 	    IFunction total = new ConjunctionContainer();
-	    for (IWord subword : this.subwords)
-	    {
-		ConllWord conll_sub = (ConllWord) subword;
-		total.addSub(conll_sub.toPLA());
-	    }
+	    total = this.subsToPla(total);
 	    //if total contains one result and no sublogic - return only one
 	    if (total.getSub().size() > 1)
 	    {
@@ -622,6 +615,36 @@ public class ConllWord implements IWord
 	IWord ret = new ConllWord();
 	ret.setLinktype(IWord.Link.NONE);
 	return ret;
+    }
+    
+    /**
+     * Returns all subobject except OBJ and SUBJ
+     * @return list of subwords
+     */
+    public List<IWord> getOtherSubwords()
+    {
+	List<IWord> objects = this.getSubWords();
+	List<IWord> ret = new ArrayList<>();
+	for (IWord obj : objects)
+	{
+	    //If object is noun - it is good
+	    if (obj.getLinktype() != IWord.Link.SUBJ && obj.getLinktype() != IWord.Link.OBJ)
+		ret.add(obj);
+	    
+	}
+	return ret;
+    }
+    
+    public IFunction subsToPla(IFunction tmp_result)
+    {
+	List<IWord> subs = this.getOtherSubwords();
+	for (IWord sub : subs)
+	{
+	    IFunction tmp_sublogic = sub.toPLA();
+	    if (tmp_sublogic != null)
+		tmp_result.addSub(tmp_sublogic);
+	}
+	return tmp_result;
     }
 
     @Override
