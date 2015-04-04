@@ -409,7 +409,20 @@ public class ConllWord implements IWord
 	{
 	    if (subword.getLink() == linktype)
 	    {
-		retwords.add(subword);
+		if (subword.getPos().equals("S"))
+		    retwords.add(subword);
+		else
+		{
+		    for (IWord subsubword : subword.getSubWords())
+		    {
+			//TODO: check for other potentional linktypes except PREP
+			if (subsubword.getLink() == IWord.Link.PREP)
+			{
+			    if (subsubword.getPos().equals("S"))
+				retwords.add(subsubword);
+			}
+		    }
+		}
 	    }
 	}
 	return retwords;
