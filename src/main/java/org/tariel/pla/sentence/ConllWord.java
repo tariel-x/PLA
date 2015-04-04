@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
 import org.tariel.pla.logics.LogicFunction;
+import org.tariel.pla.logics.Proposition;
 import org.tariel.pla.logics.Quantifer;
 import org.tariel.pla.logics.Term;
 
@@ -424,7 +425,12 @@ public class ConllWord implements IWord
 	    //P(?)
 	    Term predic_predic = new Term();
 	    predic_predic.setName(this.getLex());
-
+	    
+	    //Find verb's subject
+	    IWord subj_word = this.getSubject();
+	    //Search for verb's objects
+	    IWord obj_word = this.getObject();
+	    
 	    //variables for ∃xSx
 	    Quantifer quant_subj = null;//Base quantifer - root element for this part
 	    Term subj_term = null;
@@ -432,10 +438,12 @@ public class ConllWord implements IWord
 	    //variables for ∃xOx
 	    Quantifer quant_obj = null;
 	    Term obj_predic = null;
-
-	    //Find verb's subject
+	    
+	    //prepositions
+	    Proposition p1 = null;
+	    Proposition p2 = null;
+	    
 	    //construnct ∃xSx
-	    IWord subj_word = this.getSubject();
 	    if (!subj_word.isBlank())
 	    {
 		//Subject term with quantifer, introducing subject
@@ -445,15 +453,18 @@ public class ConllWord implements IWord
 		subj_term = new Term();
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
-	    } else
+	    } 
+	    else if (subj_word.isProposition())
+	    {
+		p1 = new Proposition();
+	    }
+	    else
 	    {
 		//nothing will be happened here
 		return null;
 	    }
 
-	    //Search for verb's objects
 	    //constructs ∃yOy
-	    IWord obj_word = this.getObject();
 	    if (!obj_word.isBlank())
 	    {
 		//Object term with quantifer
@@ -463,17 +474,30 @@ public class ConllWord implements IWord
 		obj_predic = new Term();
 		obj_predic.addVar(quant_obj.getVar());
 		obj_predic.setName(obj_word.getLex());
+	    } 
+	    if (subj_word.isProposition())
+	    {
+		p2 = new Proposition();
 	    }
 
 	    //Add subject and object variables to predicate (if they exist)
 	    //P(?) -> Pxy or Px or Py or nothing
+	    //if there are prepositions - they will be added instead of variables
 	    if (quant_subj != null)
 	    {
 		predic_predic.addVar(quant_subj.getVar());
 	    }
+	    if (p1 != null)
+	    {
+		predic_predic.addVar(p1);
+	    }
 	    if (quant_obj != null)
 	    {
 		predic_predic.addVar(quant_obj.getVar());
+	    }
+	    if (p2 != null)
+	    {
+		predic_predic.addVar(p2);
 	    }
 
 	    //Object quantifer for Object and Predicate
@@ -593,6 +617,10 @@ public class ConllWord implements IWord
 	    {
 		return obj;
 	    }
+	    if (obj.getPos().equals("SPRO"))
+	    {
+		
+	    }
 	}
 	IWord ret = new ConllWord();
 	ret.setLinktype(IWord.Link.NONE);
@@ -651,5 +679,11 @@ public class ConllWord implements IWord
     public Boolean isBlank()
     {
 	return (this.linktype == IWord.Link.NONE);
+    }
+    
+    @Override
+    public Boolean isProposition()
+    {
+	return this.getPos().equals("SPRO");
     }
 }

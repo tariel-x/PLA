@@ -16,23 +16,29 @@
 
 package org.tariel.pla.logics;
 
+
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
 public class Proposition implements IVariable
 {
+    private String name;
+    
+    public Proposition()
+    {
+	this.setName(java.util.UUID.randomUUID().toString());
+    }
 
     @Override
     public void setName(String name)
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	this.name = name;
     }
 
     @Override
     public String getName()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	return this.name;
     }
-    
 }

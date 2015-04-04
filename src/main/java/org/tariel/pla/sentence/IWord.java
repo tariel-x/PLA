@@ -167,6 +167,12 @@ public interface IWord
      * @return 
      */
     public Boolean isBlank();
+    
+    /**
+     * Checks if the word is proposition
+     * @return 
+     */
+    public Boolean isProposition();
 
     public Link getLink();
 
