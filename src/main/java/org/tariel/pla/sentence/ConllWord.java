@@ -409,20 +409,7 @@ public class ConllWord implements IWord
 	{
 	    if (subword.getLink() == linktype)
 	    {
-		if (subword.getPos().equals("S"))
-		    retwords.add(subword);
-		else
-		{
-		    for (IWord subsubword : subword.getSubWords())
-		    {
-			//TODO: check for other potentional linktypes except PREP
-			if (subsubword.getLink() == IWord.Link.PREP)
-			{
-			    if (subsubword.getPos().equals("S"))
-				retwords.add(subsubword);
-			}
-		    }
-		}
+		retwords.add(subword);
 	    }
 	}
 	return retwords;
@@ -626,13 +613,19 @@ public class ConllWord implements IWord
 	for (IWord obj : objects)
 	{
 	    //If object is noun - it is good
-	    if (obj.getPos().equals("S"))
+	    if (obj.getPos().equals("S") || obj.getPos().equals("SPRO"))
+		    return obj;
+	    else
 	    {
-		return obj;
-	    }
-	    if (obj.getPos().equals("SPRO"))
-	    {
-		
+		for (IWord subsubword : obj.getSubWords())
+		{
+		    //TODO: check for other potentional linktypes except PREP
+		    if (subsubword.getLink() == IWord.Link.PREP)
+		    {
+			if (subsubword.getPos().equals("S") || subsubword.getPos().equals("SPRO"))
+			    return subsubword;
+		    }
+		}
 	    }
 	}
 	IWord ret = new ConllWord();
@@ -648,9 +641,19 @@ public class ConllWord implements IWord
 	for (IWord obj : objects)
 	{
 	    //If object is noun - it is good
-	    if (obj.getPos().equals("S"))
+	    if (obj.getPos().equals("S") || obj.getPos().equals("SPRO"))
+		    return obj;
+	    else
 	    {
-		return obj;
+		for (IWord subsubword : obj.getSubWords())
+		{
+		    //TODO: check for other potentional linktypes except PREP
+		    if (subsubword.getLink() == IWord.Link.PREP)
+		    {
+			if (subsubword.getPos().equals("S") || subsubword.getPos().equals("SPRO"))
+			    return subsubword;
+		    }
+		}
 	    }
 	}
 	IWord ret = new ConllWord();
