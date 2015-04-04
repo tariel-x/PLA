@@ -15,6 +15,7 @@
  */
 package org.tariel.pla.logics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  */
 public class Term implements IFunction
 {
-    private List<IVariable> variables;
+    private List<IVariable> variables = new ArrayList<IVariable>();
     private String name;
 
     public List<IVariable> getVars()
