@@ -27,4 +27,10 @@ public interface IFunction
     public List<IFunction> getSub();
     
     public void addSub(IFunction sub);
+    
+    /**
+     * Produces string representation of logic formula
+     * @return string
+     */
+    public String toStrRepresentation();
 }

@@ -41,4 +41,17 @@ public class ConjunctionContainer implements IFunction
 	this.sub_functions.add(sub);
     }
 
+    @Override
+    public String toStrRepresentation()
+    {
+	String result = "";
+	List<String> sub_strs = new ArrayList<>();
+	for (IFunction sub: this.getSub())
+	{
+	    sub_strs.add(sub.toStrRepresentation());
+	}
+	result = String.join(" ⋀ ", sub_strs);
+	return result;
+    }
+
 }

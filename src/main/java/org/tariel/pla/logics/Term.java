@@ -59,4 +59,18 @@ public class Term implements IFunction
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public String toStrRepresentation()
+    {
+	String ret = this.getName(); 
+	ret = ret.substring(0,1).toUpperCase() + ret.substring(1);
+	List<String> sub_vars = new ArrayList<>();
+	for (IVariable var : this.getVars())
+	{
+	    sub_vars.add(var.toStrRepresentation());
+	}
+	ret = ret +  "(" + String.join(",", sub_vars) + ")";
+	return ret;
+    }
+
 }

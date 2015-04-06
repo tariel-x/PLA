@@ -36,5 +36,11 @@ public class LogicVariable implements IVariable
     {
 	return this.name;
     }
+
+    @Override
+    public String toStrRepresentation()
+    {
+	return VariableStorage.getVar(this.getName());
+    }
     
 }

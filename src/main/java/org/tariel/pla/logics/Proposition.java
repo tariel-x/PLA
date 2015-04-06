@@ -41,4 +41,10 @@ public class Proposition implements IVariable
     {
 	return this.name;
     }
+
+    @Override
+    public String toStrRepresentation()
+    {
+	return VariableStorage.getProposition(this.getName());
+    }
 }

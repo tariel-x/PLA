@@ -50,5 +50,18 @@ public class Quantifer implements IFunction
     public void addSub(IFunction sub) {
 	this.sub_functions.add(sub);
     }
+
+    @Override
+    public String toStrRepresentation()
+    {
+	String ret = "∃" + this.getVar().toStrRepresentation();
+	List<String> sub_strs = new ArrayList<>();
+	for (IFunction sub: this.getSub())
+	{
+	    sub_strs.add(sub.toStrRepresentation());
+	}
+	ret = ret + "(" + String.join(" ⋀ ", sub_strs) + ")";
+	return ret;
+    }
     
 }

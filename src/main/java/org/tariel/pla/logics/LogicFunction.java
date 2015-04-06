@@ -16,6 +16,8 @@
 
 package org.tariel.pla.logics;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +37,19 @@ public class LogicFunction implements IFunction
     public void addSub(IFunction sub)
     {
 	throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String toStrRepresentation()
+    {
+	String result = "";
+	List<String> sub_strs = new ArrayList<>();
+	for (IFunction sub: this.getSub())
+	{
+	    sub_strs.add(sub.toStrRepresentation());
+	}
+	result = String.join(" ⋀ ", sub_strs);
+	return result;
     }
     
 }

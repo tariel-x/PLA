@@ -20,6 +20,8 @@ public class App
 			"4	в	в	PR	PR	_	3	OBJ	_	_\n" +
 			"5	лягушку	лягушка	S	S	ACC|SG|F|ANIM	4	PREP	_	_");
 	IFunction fin = word.toPLA();
+	String formula = fin.toStrRepresentation();
+	System.out.println(formula);
 	System.out.println("fin");
     }
 }

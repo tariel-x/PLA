@@ -25,4 +25,10 @@ public interface IVariable
     public void setName(String name);
     
     public String getName();
+    
+    /**
+     * Produces string representation of logic variable
+     * @return string
+     */
+    public String toStrRepresentation();
 }
