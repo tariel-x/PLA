@@ -418,7 +418,6 @@ public class ConllWord implements IWord
     @Override
     public IFunction toPLA()
     {
-	//TODO: запилить местоимения - самое главное же
 	if (this.pos.equals("V"))
 	{
 	    //Predicate term (verb)
@@ -444,7 +443,7 @@ public class ConllWord implements IWord
 	    Proposition p2 = null;
 	    
 	    //construnct ∃xSx
-	    if (!subj_word.isBlank())
+	    if (!subj_word.isBlank() && !subj_word.isProposition())
 	    {
 		//Subject term with quantifer, introducing subject
 		//∃x
@@ -454,8 +453,9 @@ public class ConllWord implements IWord
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
 	    } 
-	    else if (subj_word.isProposition())
+	    else if (!subj_word.isBlank() && subj_word.isProposition())
 	    {
+		//Creates subject proposition, if it exists
 		p1 = new Proposition();
 	    }
 	    else
@@ -465,7 +465,7 @@ public class ConllWord implements IWord
 	    }
 
 	    //constructs ∃yOy
-	    if (!obj_word.isBlank())
+	    if (!obj_word.isBlank() && !subj_word.isProposition())
 	    {
 		//Object term with quantifer
 		//∃y
@@ -474,8 +474,9 @@ public class ConllWord implements IWord
 		obj_predic = new Term();
 		obj_predic.addVar(quant_obj.getVar());
 		obj_predic.setName(obj_word.getLex());
-	    } 
-	    if (subj_word.isProposition())
+	    }
+	    //Creates object propostion if it exists
+	    if (!obj_word.isBlank() && subj_word.isProposition())
 	    {
 		p2 = new Proposition();
 	    }
@@ -483,7 +484,7 @@ public class ConllWord implements IWord
 	    //Add subject and object variables to predicate (if they exist)
 	    //P(?) -> Pxy or Px or Py or nothing
 	    //if there are prepositions - they will be added instead of variables
-	    if (quant_subj != null)
+	    if (quant_subj != null && p1 == null)
 	    {
 		predic_predic.addVar(quant_subj.getVar());
 	    }
@@ -491,7 +492,7 @@ public class ConllWord implements IWord
 	    {
 		predic_predic.addVar(p1);
 	    }
-	    if (quant_obj != null)
+	    if (quant_obj != null && p2 == null)
 	    {
 		predic_predic.addVar(quant_obj.getVar());
 	    }
@@ -509,21 +510,30 @@ public class ConllWord implements IWord
 	    }
 
 	    //Subject first for previous quantifer and Subject term
-	    //∃x(Sx ⋀ ∃y(Oy ⋀ Pxy)) or ∃x(Sx ⋀ Px)
+	    //∃x(Sx ⋀ ∃y(Oy ⋀ Pxy)) or ∃x(Sx ⋀ Px) or Pp1,p2
+	    IFunction this_result = null;
 	    if (quant_obj != null)
 	    {
 		quant_subj.addSub(subj_term);
 		quant_subj.addSub(quant_obj);
-	    } else
+		this_result = quant_subj;
+	    } 
+	    else if (quant_subj != null)
 	    {
 		quant_subj.addSub(subj_term);
 		quant_subj.addSub(predic_predic);
+		this_result = quant_subj;
+	    }
+	    else
+	    {
+		//If  no object, subject -> return current predicate
+		this_result = predic_predic;
 	    }
 
 	    //If will be found something deeped - this will be for conjunction of current and deeper
 	    IFunction total = new ConjunctionContainer();
 	    //add current result
-	    total.addSub(quant_subj);
+	    total.addSub(this_result);
 	    //result of object's subcalculations
 	    IFunction obj_underlogic = null;
 //	    IFunction subj_underlogic = subj_word.toPLA();
@@ -548,7 +558,7 @@ public class ConllWord implements IWord
 		return total;
 	    } else
 	    {
-		return quant_subj;
+		return this_result;
 	    }
 	} else if (this.pos.equals("S"))
 	{
@@ -609,8 +619,6 @@ public class ConllWord implements IWord
     @Override
     public IWord getSubject()
     {
-	//TODO: искать не только по подсловам, но и глубже
-	//Возможно, это стоит вынести в getSubWords
 	List<IWord> objects = this.getSubWords(IWord.Link.SUBJ);
 	for (IWord obj : objects)
 	{
@@ -638,7 +646,6 @@ public class ConllWord implements IWord
     @Override
     public IWord getObject()
     {
-	//TODO: искать не только по подсловам, но и глубже
 	List<IWord> objects = this.getSubWords(IWord.Link.OBJ);
 	for (IWord obj : objects)
 	{
