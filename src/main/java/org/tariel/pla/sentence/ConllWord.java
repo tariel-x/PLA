@@ -526,10 +526,12 @@ public class ConllWord implements IWord
 	    total.addSub(quant_subj);
 	    //result of object's subcalculations
 	    IFunction obj_underlogic = null;
-	    IFunction subj_underlogic = subj_word.toPLA();
+//	    IFunction subj_underlogic = subj_word.toPLA();
+	    IFunction subj_underlogic = subj_word.toSubPLA();
 	    if (!obj_word.isBlank())
 	    {
-		obj_underlogic = obj_word.toPLA();
+//		obj_underlogic = obj_word.toPLA();
+		obj_underlogic = obj_word.toSubPLA();
 	    }
 	    if (subj_underlogic != null)
 	    {
@@ -701,5 +703,23 @@ public class ConllWord implements IWord
     public Boolean isProposition()
     {
 	return this.getPos().equals("SPRO");
+    }
+
+    @Override
+    public IFunction toSubPLA()
+    {
+	IFunction total = new ConjunctionContainer();
+	total = this.subsToPla(total);
+	//if total contains one result and no sublogic - return only one
+	if (total.getSub().size() > 1)
+	{
+	    return total;
+	} else if (total.getSub().size() > 0)
+	{
+	    return total.getSub().get(0);
+	} else
+	{
+	    return null;
+	}
     }
 }

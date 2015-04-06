@@ -187,6 +187,12 @@ public interface IWord
      * @return PLA formula
      */
     public IFunction toPLA();
+    
+    /**
+     * Converts subsentence structure into PLA formula
+     * @return PLA formula from subwords
+     */
+    public IFunction toSubPLA();
 
     /**
      * Get origin word
