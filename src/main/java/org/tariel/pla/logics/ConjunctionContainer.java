@@ -54,4 +54,22 @@ public class ConjunctionContainer implements IFunction
 	return result;
     }
 
+    @Override
+    public IFunction toClassicLogic()
+    {
+	for (int i = this.getSub().size()-1; i>=0; i--)
+	{
+	    IFunction tmp_func = this.getSub().get(i);
+	    //TODO: save conjunctions without quantifiers.
+	    //quantifiers place first in reverse-order
+	}
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void cleanSubs()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

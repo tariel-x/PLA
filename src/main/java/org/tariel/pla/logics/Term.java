@@ -73,4 +73,16 @@ public class Term implements IFunction
 	return ret;
     }
 
+    @Override
+    public IFunction toClassicLogic()
+    {
+	return this;
+    }
+
+    @Override
+    public void cleanSubs()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

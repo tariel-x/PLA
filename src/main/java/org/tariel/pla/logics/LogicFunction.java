@@ -51,5 +51,17 @@ public class LogicFunction implements IFunction
 	result = String.join(" ⋀ ", sub_strs);
 	return result;
     }
+
+    @Override
+    public IFunction toClassicLogic()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void cleanSubs()
+    {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

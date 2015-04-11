@@ -63,5 +63,30 @@ public class Quantifer implements IFunction
 	ret = ret + "(" + String.join(" ⋀ ", sub_strs) + ")";
 	return ret;
     }
+
+    @Override
+    public IFunction toClassicLogic()
+    {
+	try 
+	{
+	    IFunction current_quantifer = (IFunction) this.clone();
+	    current_quantifer.cleanSubs();
+	    for (IFunction sub : this.getSub())
+	    {
+		current_quantifer.addSub(sub.toClassicLogic());
+	    }
+	    return current_quantifer;
+	}
+	catch (CloneNotSupportedException ex)
+	{
+	    return null;
+	}
+    }
+
+    @Override
+    public void cleanSubs()
+    {
+	this.sub_functions = new ArrayList<>();
+    }
     
 }

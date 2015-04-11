@@ -28,9 +28,17 @@ public interface IFunction
     
     public void addSub(IFunction sub);
     
+    public void cleanSubs();
+    
     /**
      * Produces string representation of logic formula
      * @return string
      */
     public String toStrRepresentation();
+    
+    /**
+     * Returns current formula transformed from PLA to classic logic
+     * @return formula
+     */
+    public IFunction toClassicLogic();
 }
