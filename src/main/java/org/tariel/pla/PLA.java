@@ -15,7 +15,9 @@
  */
 package org.tariel.pla;
 
+import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.VariableStorage;
 import org.tariel.pla.sentence.ConllWord;
 import org.tariel.pla.sentence.IWord;
 
@@ -25,17 +27,36 @@ import org.tariel.pla.sentence.IWord;
  */
 public class PLA
 {
-    private IFunction func;
+    private ConjunctionContainer func;
+    
+    public PLA()
+    {
+	func = new ConjunctionContainer();
+    }
     
     public void fromConll(String conll)
     {
+	VariableStorage.clear();
+	func = new ConjunctionContainer();
 	IWord word = new ConllWord();
 	word.fromConll(conll);
-	func = word.toPLA();
+	func.addSub(word.toPLA());
     }
     
     public String toLogicsString()
     {
-	return this.func.toStrRepresentation();
+	if (this.func.getSub().size() == 1)
+	    return this.func.getSub().get(0).toStrRepresentation();
+	else if(this.func.getSub().size() > 1)
+	    return this.func.toStrRepresentation();
+	else
+	    return new String();
+    }
+    
+    public void addConll(String conll)
+    {
+	IWord word = new ConllWord();
+	word.fromConll(conll);
+	func.addSub(word.toPLA());
     }
 }

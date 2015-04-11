@@ -54,4 +54,10 @@ public class VariableStorage
 	    return propositions.get(hash);
 	}
     }
+    
+    public static void clear()
+    {
+	vars = new HashMap<>();
+	propositions = new HashMap<>();
+    }
 }
