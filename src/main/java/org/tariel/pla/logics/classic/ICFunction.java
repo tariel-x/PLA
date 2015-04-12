@@ -14,34 +14,25 @@
  * limitations under the License.
  */
 
-package org.tariel.pla.logics;
+package org.tariel.pla.logics.classic;
 
 import java.util.List;
-import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
-public interface IFunction
+public interface ICFunction
 {
-    public List<IFunction> getSub();
+    public List<ICFunction> getSub();
     
-    public void addSub(IFunction sub);
+    public void addSub(ICFunction sub);
     
     public void cleanSubs();
-    
-    public IFunction clone();
     
     /**
      * Produces string representation of logic formula
      * @return string
      */
     public String toStrRepresentation();
-    
-    /**
-     * Returns current formula transformed from PLA to classic logic
-     * @return formula
-     */
-    public ICFunction toClassicLogic();
 }

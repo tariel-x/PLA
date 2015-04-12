@@ -14,30 +14,36 @@
  * limitations under the License.
  */
 
-package org.tariel.pla.logics;
+package org.tariel.pla.logics.classic;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.List;
-import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
-public class LogicFunction implements IFunction
+public class CQuantifiedContainer implements ICFunction
 {
-
-    @Override
-    public List<IFunction> getSub()
+    private List<CQuantifer> quantifers;
+    private List<ICFunction> sub_functions;
+    
+    public CQuantifiedContainer()
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	this.quantifers = new ArrayList<>();
+	this.sub_functions = new ArrayList<>();
+    }
+    
+    @Override
+    public List<ICFunction> getSub()
+    {
+	return this.sub_functions;
     }
 
     @Override
-    public void addSub(IFunction sub)
+    public void addSub(ICFunction sub)
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	this.sub_functions.add(sub);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class LogicFunction implements IFunction
     {
 	String result = "";
 	List<String> sub_strs = new ArrayList<>();
-	for (IFunction sub: this.getSub())
+	for (ICFunction sub : this.getSub())
 	{
 	    sub_strs.add(sub.toStrRepresentation());
 	}
@@ -54,21 +60,23 @@ public class LogicFunction implements IFunction
     }
 
     @Override
-    public ICFunction toClassicLogic()
-    {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void cleanSubs()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public IFunction clone()
-    {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	this.sub_functions = new ArrayList<>();
     }
     
+    public void addQuantifer(CQuantifer quant)
+    {
+	this.quantifers.add(quant);
+    }
+    
+    public List<CQuantifer> getQuantifers()
+    {
+	return this.quantifers;
+    }
+    
+    public void cleanQuantifers()
+    {
+	this.quantifers = new ArrayList<>();
+    }
 }

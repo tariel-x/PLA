@@ -14,47 +14,45 @@
  * limitations under the License.
  */
 
-package org.tariel.pla.logics;
+package org.tariel.pla.logics.classic;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.List;
-import org.tariel.pla.logics.classic.ICFunction;
+import org.tariel.pla.logics.IVariable;
+import org.tariel.pla.logics.LogicVariable;
 
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
-public class LogicFunction implements IFunction
+public class CQuantifer implements ICFunction
 {
-
-    @Override
-    public List<IFunction> getSub()
+    private IVariable var;
+    
+    public CQuantifer()
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	this.var = new LogicVariable();
+	this.var.setName(java.util.UUID.randomUUID().toString());
+    }
+    
+    public IVariable getVar()
+    {
+	return this.var;
+    }
+    
+    public void setVar(IVariable newvar)
+    {
+	this.var = newvar;
     }
 
     @Override
-    public void addSub(IFunction sub)
+    public List<ICFunction> getSub()
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String toStrRepresentation()
-    {
-	String result = "";
-	List<String> sub_strs = new ArrayList<>();
-	for (IFunction sub: this.getSub())
-	{
-	    sub_strs.add(sub.toStrRepresentation());
-	}
-	result = String.join(" ⋀ ", sub_strs);
-	return result;
-    }
-
-    @Override
-    public ICFunction toClassicLogic()
+    public void addSub(ICFunction sub)
     {
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -66,9 +64,9 @@ public class LogicFunction implements IFunction
     }
 
     @Override
-    public IFunction clone()
+    public String toStrRepresentation()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	String ret = "∃" + this.getVar().toStrRepresentation();
+	return ret;
     }
-    
 }

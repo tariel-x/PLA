@@ -17,6 +17,8 @@ package org.tariel.pla.logics;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.tariel.pla.logics.classic.CQuantifiedContainer;
+import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
@@ -55,13 +57,30 @@ public class ConjunctionContainer implements IFunction
     }
 
     @Override
-    public IFunction toClassicLogic()
+    public ICFunction toClassicLogic()
     {
+	CQuantifiedContainer container = new CQuantifiedContainer();
+	//TODO: rewrite this code to classic logics
+	List<Quantifer> reverse_quants = new ArrayList<>();
+	List<IFunction> new_subs = new ArrayList<>();
 	for (int i = this.getSub().size()-1; i>=0; i--)
 	{
 	    IFunction tmp_func = this.getSub().get(i);
-	    //TODO: save conjunctions without quantifiers.
-	    //quantifiers place first in reverse-order
+	    if (tmp_func.getClass().getTypeName().equals("Quantifer"))
+	    {
+		Quantifer empty_quant = (Quantifer) tmp_func.clone();
+		empty_quant.cleanSubs();
+		reverse_quants.add(empty_quant);
+		container.addQuantifer(null);
+		for (IFunction quant_sub : tmp_func.getSub())
+		{
+		    
+		}
+	    }
+	    else
+	    {
+		
+	    }
 	}
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -69,7 +88,20 @@ public class ConjunctionContainer implements IFunction
     @Override
     public void cleanSubs()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	this.sub_functions = new ArrayList<>();
+    }
+
+    @Override
+    public IFunction clone()
+    {
+	ConjunctionContainer new_cont = new ConjunctionContainer();
+	new_cont.setSubs(this.sub_functions);
+	return new_cont;
+    }
+    
+    protected void setSubs(List<IFunction> new_subs)
+    {
+	this.sub_functions = new_subs;
     }
 
 }

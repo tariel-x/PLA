@@ -13,31 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.tariel.pla.logics.classic;
 
-package org.tariel.pla.logics;
-
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.List;
-import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
-public class LogicFunction implements IFunction
+public class CConjunctionContainer implements ICFunction
 {
+    private List<ICFunction> sub_functions;
 
-    @Override
-    public List<IFunction> getSub()
+    public CConjunctionContainer()
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	this.sub_functions = new ArrayList<>();
     }
 
     @Override
-    public void addSub(IFunction sub)
+    public List<ICFunction> getSub()
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	return this.sub_functions;
+    }
+
+    @Override
+    public void addSub(ICFunction sub)
+    {
+	this.sub_functions.add(sub);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class LogicFunction implements IFunction
     {
 	String result = "";
 	List<String> sub_strs = new ArrayList<>();
-	for (IFunction sub: this.getSub())
+	for (ICFunction sub : this.getSub())
 	{
 	    sub_strs.add(sub.toStrRepresentation());
 	}
@@ -54,21 +57,9 @@ public class LogicFunction implements IFunction
     }
 
     @Override
-    public ICFunction toClassicLogic()
-    {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void cleanSubs()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	this.sub_functions = new ArrayList<>();
     }
 
-    @Override
-    public IFunction clone()
-    {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

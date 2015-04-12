@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tariel.pla.logics;
+
+package org.tariel.pla.logics.classic;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.tariel.pla.logics.classic.ICFunction;
+import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.IVariable;
 
 /**
  *
  * @author Nikita Gerasimov <tariel-x@ya.ru>
  */
-public class Term implements IFunction
+public class CTerm implements ICFunction
 {
+
     private List<IVariable> variables = new ArrayList<IVariable>();
     private String name;
 
@@ -49,15 +52,15 @@ public class Term implements IFunction
     }
 
     @Override
-    public void addSub(IFunction sub)
+    public void addSub(ICFunction sub)
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
-    public List<IFunction> getSub()
+    public List<ICFunction> getSub()
     {
-	throw new UnsupportedOperationException("Not supported yet.");
+	throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
@@ -75,27 +78,9 @@ public class Term implements IFunction
     }
 
     @Override
-    public ICFunction toClassicLogic()
-    {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//	return this;
-    }
-
-    @Override
     public void cleanSubs()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported.");
     }
-
-    @Override
-    public IFunction clone()
-    {
-	Term new_term = new Term();
-	new_term.setName(this.name);
-	for (IVariable var : this.getVars())
-	{
-	    new_term.addVar(var);
-	}
-	return new_term;
-    }
+    
 }

@@ -18,6 +18,7 @@ package org.tariel.pla.logics;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
@@ -50,6 +51,7 @@ public class Quantifer implements IFunction
     public void addSub(IFunction sub) {
 	this.sub_functions.add(sub);
     }
+    
 
     @Override
     public String toStrRepresentation()
@@ -65,28 +67,41 @@ public class Quantifer implements IFunction
     }
 
     @Override
-    public IFunction toClassicLogic()
+    public ICFunction toClassicLogic()
     {
-	try 
+	IFunction current_quantifer = (IFunction) this.clone();
+	current_quantifer.cleanSubs();
+	for (IFunction sub : this.getSub())
 	{
-	    IFunction current_quantifer = (IFunction) this.clone();
-	    current_quantifer.cleanSubs();
-	    for (IFunction sub : this.getSub())
-	    {
-		current_quantifer.addSub(sub.toClassicLogic());
-	    }
-	    return current_quantifer;
+//	    current_quantifer.addSub(sub.toClassicLogic());
 	}
-	catch (CloneNotSupportedException ex)
-	{
-	    return null;
-	}
+//	return current_quantifer;
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void cleanSubs()
     {
 	this.sub_functions = new ArrayList<>();
+    }
+
+    @Override
+    public IFunction clone()
+    {
+	Quantifer new_quant = new Quantifer();
+	new_quant.setVar(this.var);
+	new_quant.setSubs(this.sub_functions);
+	return new_quant;
+    }
+    
+    protected void setVar(IVariable newvar)
+    {
+	this.var = newvar;
+    }
+    
+    protected void setSubs(List<IFunction> new_subs)
+    {
+	this.sub_functions = new_subs;
     }
     
 }
