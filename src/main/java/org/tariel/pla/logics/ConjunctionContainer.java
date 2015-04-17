@@ -68,14 +68,14 @@ public class ConjunctionContainer implements IFunction
 	{
 	    //Make classic logics from subfunctions
 	    ICFunction tmp_classic = sub.toClassicLogic();
-	    if (tmp_classic.getClass().getTypeName().equals("CQuantifiedContainer"))
+	    if (tmp_classic.getClass().getTypeName().equals("org.tariel.pla.logics.classic.CQuantifiedContainer"))
 	    {
 		//If sub is quantified formula
 		CQuantifiedContainer old_quants = (CQuantifiedContainer) tmp_classic;
 		//take all quantifers
 		List<CQuantifer> old_quants_list = old_quants.getQuantifers();
 		//look it backwards
-		for (int i = old_quants_list.size(); i >= 0; i--)
+		for (int i = old_quants_list.size()-1; i >= 0; i--)
 		{
 		    //add to final quantifers list in reverse order
 		    CQuantifer tmp_quant = new CQuantifer();
@@ -83,6 +83,13 @@ public class ConjunctionContainer implements IFunction
 		    reverse_quants.add(tmp_quant);
 		    //then it will be reversed
 		}
+		//save all subfunctions
+		CConjunctionContainer subcont = new CConjunctionContainer();
+		for (ICFunction quant_sub : old_quants.getSub())
+		{
+		    subcont.addSub(quant_sub);
+		}
+		new_subfunctions.add(subcont);
 	    }
 	    else //Other variant - CTerm or CConjunctionContainer
 	    {
@@ -97,7 +104,7 @@ public class ConjunctionContainer implements IFunction
 	    {
 		container.addSub(func);
 	    }
-	    for (int i = reverse_quants.size(); i >= 0; i--)
+	    for (int i = reverse_quants.size()-1; i >= 0; i--)
 	    {
 		//add to quantifers container in reverse order
 		CQuantifer tmp_quant = new CQuantifer();
