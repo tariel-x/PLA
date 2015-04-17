@@ -54,12 +54,14 @@ public class CQuantifiedContainer implements ICFunction
 	{
 	    result += quant.toStrRepresentation();
 	}
+	result += "(";
 	List<String> sub_strs = new ArrayList<>();
 	for (ICFunction sub : this.getSub())
 	{
 	    sub_strs.add(sub.toStrRepresentation());
 	}
-	result = String.join(" ⋀ ", sub_strs);
+	result += String.join(" ⋀ ", sub_strs);
+	result += ")";
 	return result;
     }
 

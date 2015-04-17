@@ -18,6 +18,7 @@ package org.tariel.pla.logics;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.tariel.pla.logics.classic.CConjunctionContainer;
 import org.tariel.pla.logics.classic.CQuantifer;
 import org.tariel.pla.logics.classic.CQuantifiedContainer;
 import org.tariel.pla.logics.classic.ICFunction;
@@ -83,7 +84,7 @@ public class Quantifer implements IFunction
 	{
 	    //Make classic logics from subfunctions
 	    ICFunction tmp_classic = sub.toClassicLogic();
-	    if (tmp_classic.getClass().getTypeName().equals("CQuantifiedContainer"))
+	    if (tmp_classic.getClass().getTypeName().equals("org.tariel.pla.logics.classic.CQuantifiedContainer"))
 	    {
 		//If sub is quantified formula
 		CQuantifiedContainer old_quants = (CQuantifiedContainer) tmp_classic;
@@ -95,6 +96,13 @@ public class Quantifer implements IFunction
 		    tmp_new_quant.setVar(old_sub_quant.getVar());
 		    quants.add(tmp_new_quant);
 		}
+		//save all subfunctions
+		CConjunctionContainer subcont = new CConjunctionContainer();
+		for (ICFunction quant_sub : old_quants.getSub())
+		{
+		    subcont.addSub(quant_sub);
+		}
+		new_subfunctions.add(subcont);
 	    }
 	    else //Other variant - CTerm or CConjunctionContainer
 	    {

@@ -83,6 +83,7 @@ public class Term implements IFunction
 	{
 	    classic_term.addVar(var);
 	}
+	classic_term.setName(this.getName());
 	return classic_term;
     }
 
