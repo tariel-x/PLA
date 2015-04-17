@@ -24,6 +24,7 @@ package org.tariel.pla.logics;
 public class Proposition implements IVariable
 {
     private String name;
+    private Object source_id;
     
     public Proposition()
     {
@@ -46,5 +47,17 @@ public class Proposition implements IVariable
     public String toStrRepresentation()
     {
 	return VariableStorage.getProposition(this.getName());
+    }
+
+    @Override
+    public Object getSourceId()
+    {
+	return source_id;
+    }
+
+    @Override
+    public void setSourceId(Object id)
+    {
+	source_id = id;
     }
 }

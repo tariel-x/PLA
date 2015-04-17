@@ -27,6 +27,19 @@ public interface IVariable
     public String getName();
     
     /**
+     * Returns id of word in the source text (Conll, etc)
+     * Interger for Conll
+     * @return 
+     */
+    public Object getSourceId();
+    
+    /**
+     * Sets id from source text
+     * @param id 
+     */
+    public void setSourceId(Object id);
+    
+    /**
      * Produces string representation of logic variable
      * @return string
      */

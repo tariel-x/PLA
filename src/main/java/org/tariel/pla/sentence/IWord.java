@@ -183,6 +183,13 @@ public interface IWord
     public void fromConll(String conllSentence);
     
     /**
+     * Returns conll of this sentence
+     * Conll string returns if only Word instance was made from conll
+     * @return conll string
+     */
+    public String getConll();
+    
+    /**
      * Converts sentence structure into PLA formula
      * @return PLA formula
      */
@@ -239,6 +246,8 @@ public interface IWord
     public String getAdditionalInfo();
     
     public Link getLinktype();
+    
+    public Integer getId();
 
     public void setLex(String value);
     
@@ -275,4 +284,6 @@ public interface IWord
     public void setAdditionalInfo(String value);
     
     public void setLinktype(Link link);
+    
+    public void setId(Integer id);
 }

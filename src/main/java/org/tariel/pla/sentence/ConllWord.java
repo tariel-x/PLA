@@ -57,6 +57,7 @@ public class ConllWord implements IWord
     public String other;
 
     public Integer id;
+    public String conll_string = null;
 
     @Override
     public List<IWord> getSubWords()
@@ -289,6 +290,7 @@ public class ConllWord implements IWord
     @Override
     public void fromConll(String conllSentence)
     {
+	this.conll_string = conllSentence;
 	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
 	//find root
 	int root = 0;
@@ -451,16 +453,17 @@ public class ConllWord implements IWord
 		subj_term = new Term();
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
+		quant_subj.getVar().setSourceId(subj_word.getId());
 	    } 
 	    else if (!subj_word.isBlank() && subj_word.isProposition())
 	    {
 		//Creates subject proposition, if it exists
 		p1 = new Proposition();
+		p1.setSourceId(subj_word.getId());
 	    }
 	    else
 	    {
 		//nothing will be happened here
-//		return null;
 		//maybe look deeper?
 		IFunction cont = new ConjunctionContainer();
 		cont = this.subsToPla(cont);
@@ -480,11 +483,13 @@ public class ConllWord implements IWord
 		obj_predic = new Term();
 		obj_predic.addVar(quant_obj.getVar());
 		obj_predic.setName(obj_word.getLex());
+		quant_obj.getVar().setSourceId(obj_word.getId());
 	    }
 	    //Creates object propostion if it exists
 	    if (!obj_word.isBlank() && subj_word.isProposition())
 	    {
 		p2 = new Proposition();
+		p2.setSourceId(obj_word.getId());
 	    }
 
 	    //Add subject and object variables to predicate (if they exist)
@@ -734,5 +739,23 @@ public class ConllWord implements IWord
 	{
 	    return null;
 	}
+    }
+
+    @Override
+    public String getConll()
+    {
+	return this.conll_string;
+    }
+
+    @Override
+    public Integer getId()
+    {
+	return this.id;
+    }
+
+    @Override
+    public void setId(Integer id)
+    {
+	this.id = id;
     }
 }
