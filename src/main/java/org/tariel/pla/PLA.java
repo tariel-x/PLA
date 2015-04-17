@@ -18,6 +18,7 @@ package org.tariel.pla;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
 import org.tariel.pla.logics.VariableStorage;
+import org.tariel.pla.logics.classic.ICFunction;
 import org.tariel.pla.sentence.ConllWord;
 import org.tariel.pla.sentence.IWord;
 
@@ -28,6 +29,7 @@ import org.tariel.pla.sentence.IWord;
 public class PLA
 {
     private ConjunctionContainer func;
+    private ICFunction classic_func;
     
     public PLA()
     {
@@ -51,6 +53,17 @@ public class PLA
 	    return this.func.toStrRepresentation();
 	else
 	    return new String();
+    }
+    
+    public void toClassicLogics()
+    {
+	if (func != null)
+	    this.classic_func = this.func.toClassicLogic();
+    }
+    
+    public String toClassicLogicsString()
+    {
+	return this.classic_func.toStrRepresentation();
     }
     
     public void addConll(String conll)

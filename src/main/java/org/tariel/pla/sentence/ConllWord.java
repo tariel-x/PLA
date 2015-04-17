@@ -460,7 +460,14 @@ public class ConllWord implements IWord
 	    else
 	    {
 		//nothing will be happened here
-		return null;
+//		return null;
+		//maybe look deeper?
+		IFunction cont = new ConjunctionContainer();
+		cont = this.subsToPla(cont);
+		if (cont.getSub().size() > 1 || cont.getSub().size() == 0)
+		    return cont;
+		else
+		    return cont.getSub().get(0);
 	    }
 
 	    //constructs ∃yOy
