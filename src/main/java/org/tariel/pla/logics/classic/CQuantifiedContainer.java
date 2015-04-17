@@ -50,6 +50,10 @@ public class CQuantifiedContainer implements ICFunction
     public String toStrRepresentation()
     {
 	String result = "";
+	for (CQuantifer quant : this.getQuantifers())
+	{
+	    result += quant.toStrRepresentation();
+	}
 	List<String> sub_strs = new ArrayList<>();
 	for (ICFunction sub : this.getSub())
 	{

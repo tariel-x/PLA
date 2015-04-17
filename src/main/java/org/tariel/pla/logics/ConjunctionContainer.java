@@ -18,7 +18,9 @@ package org.tariel.pla.logics;
 import java.util.ArrayList;
 import java.util.List;
 import org.tariel.pla.logics.classic.CQuantifiedContainer;
+import org.tariel.pla.logics.classic.CQuantifer;
 import org.tariel.pla.logics.classic.ICFunction;
+import org.tariel.pla.logics.classic.CConjunctionContainer;
 
 /**
  *
@@ -59,30 +61,60 @@ public class ConjunctionContainer implements IFunction
     @Override
     public ICFunction toClassicLogic()
     {
-	CQuantifiedContainer container = new CQuantifiedContainer();
-	//TODO: rewrite this code to classic logics
-	List<Quantifer> reverse_quants = new ArrayList<>();
-	List<IFunction> new_subs = new ArrayList<>();
-	for (int i = this.getSub().size()-1; i>=0; i--)
+	
+	List<CQuantifer> reverse_quants = new ArrayList<>();
+	List<ICFunction> new_subfunctions = new ArrayList<>();
+	for (IFunction sub : this.getSub())
 	{
-	    IFunction tmp_func = this.getSub().get(i);
-	    if (tmp_func.getClass().getTypeName().equals("Quantifer"))
+	    //Make classic logics from subfunctions
+	    ICFunction tmp_classic = sub.toClassicLogic();
+	    if (tmp_classic.getClass().getTypeName().equals("CQuantifiedContainer"))
 	    {
-		Quantifer empty_quant = (Quantifer) tmp_func.clone();
-		empty_quant.cleanSubs();
-		reverse_quants.add(empty_quant);
-		container.addQuantifer(null);
-		for (IFunction quant_sub : tmp_func.getSub())
+		//If sub is quantified formula
+		CQuantifiedContainer old_quants = (CQuantifiedContainer) tmp_classic;
+		//take all quantifers
+		List<CQuantifer> old_quants_list = old_quants.getQuantifers();
+		//look it backwards
+		for (int i = old_quants_list.size(); i >= 0; i--)
 		{
-		    
+		    //add to final quantifers list in reverse order
+		    CQuantifer tmp_quant = new CQuantifer();
+		    tmp_quant.setVar(old_quants_list.get(i).getVar());
+		    reverse_quants.add(tmp_quant);
+		    //then it will be reversed
 		}
 	    }
-	    else
+	    else //Other variant - CTerm or CConjunctionContainer
 	    {
-		
+		//simple add it
+		new_subfunctions.add(tmp_classic);
 	    }
 	}
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	if (reverse_quants.size() > 0)
+	{
+	    CQuantifiedContainer container = new CQuantifiedContainer();
+	    for (ICFunction func : new_subfunctions)
+	    {
+		container.addSub(func);
+	    }
+	    for (int i = reverse_quants.size(); i >= 0; i--)
+	    {
+		//add to quantifers container in reverse order
+		CQuantifer tmp_quant = new CQuantifer();
+		tmp_quant.setVar(reverse_quants.get(i).getVar());
+		container.addQuantifer(tmp_quant);
+	    }
+	    return container;
+	}
+	else
+	{
+	    CConjunctionContainer container = new CConjunctionContainer();
+	    for (ICFunction func : new_subfunctions)
+	    {
+		container.addSub(func);
+	    }
+	    return container;
+	}
     }
 
     @Override

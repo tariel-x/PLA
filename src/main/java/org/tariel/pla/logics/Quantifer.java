@@ -18,6 +18,8 @@ package org.tariel.pla.logics;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.tariel.pla.logics.classic.CQuantifer;
+import org.tariel.pla.logics.classic.CQuantifiedContainer;
 import org.tariel.pla.logics.classic.ICFunction;
 
 /**
@@ -69,14 +71,47 @@ public class Quantifer implements IFunction
     @Override
     public ICFunction toClassicLogic()
     {
-	IFunction current_quantifer = (IFunction) this.clone();
-	current_quantifer.cleanSubs();
+	List<CQuantifer> quants = new ArrayList<>();
+	List<ICFunction> new_subfunctions = new ArrayList<>();
+	
+	//add current quantifer to quantifer's list
+	CQuantifer tmp_current_quant = new CQuantifer();
+	tmp_current_quant.setVar(this.getVar());
+	quants.add(tmp_current_quant);
+	
 	for (IFunction sub : this.getSub())
 	{
-//	    current_quantifer.addSub(sub.toClassicLogic());
+	    //Make classic logics from subfunctions
+	    ICFunction tmp_classic = sub.toClassicLogic();
+	    if (tmp_classic.getClass().getTypeName().equals("CQuantifiedContainer"))
+	    {
+		//If sub is quantified formula
+		CQuantifiedContainer old_quants = (CQuantifiedContainer) tmp_classic;
+		//take all quantifers
+		for (CQuantifer old_sub_quant : old_quants.getQuantifers())
+		{
+		    //add to final quantifers list in reverse order
+		    CQuantifer tmp_new_quant = new CQuantifer();
+		    tmp_new_quant.setVar(old_sub_quant.getVar());
+		    quants.add(tmp_new_quant);
+		}
+	    }
+	    else //Other variant - CTerm or CConjunctionContainer
+	    {
+		//simple add it
+		new_subfunctions.add(tmp_classic);
+	    }
 	}
-//	return current_quantifer;
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	CQuantifiedContainer container = new CQuantifiedContainer();
+	for (CQuantifer tmp_new_quant : quants)
+	{
+	    container.addQuantifer(tmp_new_quant);
+	}
+	for (ICFunction tmp_new_func : new_subfunctions)
+	{
+	    container.addSub(tmp_new_func);
+	}
+	return container;
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.tariel.pla.logics;
 import java.util.ArrayList;
 import java.util.List;
 import org.tariel.pla.logics.classic.ICFunction;
+import org.tariel.pla.logics.classic.CTerm;
 
 /**
  *
@@ -77,8 +78,12 @@ public class Term implements IFunction
     @Override
     public ICFunction toClassicLogic()
     {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//	return this;
+	CTerm classic_term = new CTerm();
+	for (IVariable var : this.getVars())
+	{
+	    classic_term.addVar(var);
+	}
+	return classic_term;
     }
 
     @Override

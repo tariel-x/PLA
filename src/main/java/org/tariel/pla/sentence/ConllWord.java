@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
-import org.tariel.pla.logics.LogicFunction;
 import org.tariel.pla.logics.Proposition;
 import org.tariel.pla.logics.Quantifer;
 import org.tariel.pla.logics.Term;
