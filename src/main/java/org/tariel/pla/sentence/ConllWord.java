@@ -18,6 +18,8 @@ package org.tariel.pla.sentence;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
@@ -58,6 +60,7 @@ public class ConllWord implements IWord
 
     public Integer id;
     public String conll_string = null;
+    public Map<String, String> conll_strs = new HashMap<>();
 
     @Override
     public List<IWord> getSubWords()
@@ -290,13 +293,17 @@ public class ConllWord implements IWord
     @Override
     public void fromConll(String conllSentence)
     {
-	this.conll_string = conllSentence;
 	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
+	for (String str : conllstrings)
+	{
+	    this.conll_strs.put(java.util.UUID.randomUUID().toString(), str);
+	}
 	//find root
 	int root = 0;
-	for (int i = 0; i < conllstrings.size(); i++)
+	int i = 0;
+	for (Map.Entry<String, String> entry : conll_strs.entrySet())
 	{
-	    String[] parts = conllstrings.get(i).split("\t");
+	    String[] parts = entry.getValue().split("\t");
 	    if (Integer.parseInt(parts[6]) == 0)
 	    {
 		//fill this with root
@@ -315,6 +322,7 @@ public class ConllWord implements IWord
 		root = i;
 		break;
 	    }
+	    i++;
 	}
 	this.fromConll(conllSentence, root + 1);
     }
@@ -744,7 +752,7 @@ public class ConllWord implements IWord
     @Override
     public String getConll()
     {
-	return this.conll_string;
+	return String.join("\n", this.conll_strs.values());
     }
 
     @Override
