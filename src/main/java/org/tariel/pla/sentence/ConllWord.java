@@ -18,8 +18,6 @@ package org.tariel.pla.sentence;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
@@ -60,7 +58,7 @@ public class ConllWord implements IWord
 
     public Integer id;
     public String conll_string = null;
-    public Map<String, String> conll_strs = new HashMap<>();
+    public String uuid;
 
     @Override
     public List<IWord> getSubWords()
@@ -69,241 +67,21 @@ public class ConllWord implements IWord
     }
 
     @Override
-    public Link getLink()
-    {
-	return this.linktype;
-    }
-
-    @Override
-    public String getWord()
-    {
-	return this.word;
-    }
-
-    @Override
-    public String getLex()
-    {
-	return this.lex;
-    }
-
-    @Override
-    public String getPos()
-    {
-	return this.pos;
-    }
-
-    @Override
-    public String getTense()
-    {
-	return this.tense;
-    }
-
-    @Override
-    public String getCase()
-    {
-	return this.lcase;
-    }
-
-    @Override
-    public String getNumber()
-    {
-	return this.number;
-    }
-
-    @Override
-    public String getVerbRepr()
-    {
-	return this.verberp;
-    }
-
-    @Override
-    public String getVerbMood()
-    {
-	return this.verbmod;
-    }
-
-    @Override
-    public String getAdjForm()
-    {
-	return this.adjform;
-    }
-
-    @Override
-    public String getAdjDegree()
-    {
-	return this.adjdegree;
-    }
-
-    @Override
-    public String getVerbFace()
-    {
-	return this.verbface;
-    }
-
-    @Override
-    public String getGender()
-    {
-	return this.gender;
-    }
-
-    @Override
-    public String getAspect()
-    {
-	return this.aspect;
-    }
-
-    @Override
-    public String getVoice()
-    {
-	return this.voise;
-    }
-
-    @Override
-    public String getAnimacy()
-    {
-	return this.animacity;
-    }
-
-    @Override
-    public String getTransitivity()
-    {
-	return this.transitivity;
-    }
-
-    @Override
-    public String getAdditionalInfo()
-    {
-	return this.addditionalinfo;
-    }
-
-    @Override
-    public Link getLinktype()
-    {
-	return this.linktype;
-    }
-
-    @Override
-    public void setLex(String value)
-    {
-	this.lex = value;
-    }
-
-    @Override
-    public void setPos(String value)
-    {
-	this.pos = value;
-    }
-
-    @Override
-    public void setTense(String value)
-    {
-	this.tense = value;
-    }
-
-    @Override
-    public void setCase(String value)
-    {
-	this.lcase = value;
-    }
-
-    @Override
-    public void setNumber(String value)
-    {
-	this.number = value;
-    }
-
-    @Override
-    public void setVerbRepr(String value)
-    {
-	this.verberp = value;
-    }
-
-    @Override
-    public void setVerbMood(String value)
-    {
-	this.verbmod = value;
-    }
-
-    @Override
-    public void setAdjForm(String value)
-    {
-	this.adjform = value;
-    }
-
-    @Override
-    public void setAdjDegree(String value)
-    {
-	this.adjdegree = value;
-    }
-
-    @Override
-    public void setVerbFace(String value)
-    {
-	this.verbface = value;
-    }
-
-    @Override
-    public void setGender(String value)
-    {
-	this.gender = value;
-    }
-
-    @Override
-    public void setAspect(String value)
-    {
-	this.aspect = value;
-    }
-
-    @Override
-    public void setVoice(String value)
-    {
-	this.voise = value;
-    }
-
-    @Override
-    public void setAnimacy(String value)
-    {
-	this.animacity = value;
-    }
-
-    @Override
-    public void setTransitivity(String value)
-    {
-	this.transitivity = value;
-    }
-
-    @Override
-    public void setAdditionalInfo(String value)
-    {
-	this.addditionalinfo = value;
-    }
-
-    @Override
-    public void setWord(String value)
-    {
-	this.word = value;
-    }
-
-    @Override
-    public void setLinktype(Link link)
-    {
-	this.linktype = link;
-    }
-
-    @Override
     public void fromConll(String conllSentence)
     {
+	this.conll_string = "";
 	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
 	for (String str : conllstrings)
 	{
-	    this.conll_strs.put(java.util.UUID.randomUUID().toString(), str);
+	    this.conll_string += str + "\t" + java.util.UUID.randomUUID().toString() + "\n";
 	}
+	conllSentence = this.conll_string;
+	conllstrings = Arrays.asList(conllSentence.split("\n"));
 	//find root
 	int root = 0;
-	int i = 0;
-	for (Map.Entry<String, String> entry : conll_strs.entrySet())
+	for (int i = 0; i < conllstrings.size(); i++)
 	{
-	    String[] parts = entry.getValue().split("\t");
+	    String[] parts = conllstrings.get(i).split("\t");
 	    if (Integer.parseInt(parts[6]) == 0)
 	    {
 		//fill this with root
@@ -319,11 +97,12 @@ public class ConllWord implements IWord
 		    this.pos = "OTHER";
 		}
 		this.decodeParams(parts[5]);
+		this.setUuid(parts[10]);
 		root = i;
 		break;
 	    }
-	    i++;
 	}
+	//find another words
 	this.fromConll(conllSentence, root + 1);
     }
 
@@ -403,6 +182,7 @@ public class ConllWord implements IWord
 		    tmp.setPos("OTHER");
 		}
 		tmp.decodeParams(parts[5]);
+		tmp.setUuid(parts[10]);
 		tmp.fromConll(conllSentence, i + 1);
 		this.subwords.add(tmp);
 	    }
@@ -461,13 +241,13 @@ public class ConllWord implements IWord
 		subj_term = new Term();
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
-		quant_subj.getVar().setSourceId(subj_word.getId());
+		quant_subj.getVar().setSourceId(subj_word.getUuid());
 	    } 
 	    else if (!subj_word.isBlank() && subj_word.isProposition())
 	    {
 		//Creates subject proposition, if it exists
 		p1 = new Proposition();
-		p1.setSourceId(subj_word.getId());
+		p1.setSourceId(subj_word.getUuid());
 	    }
 	    else
 	    {
@@ -491,13 +271,13 @@ public class ConllWord implements IWord
 		obj_predic = new Term();
 		obj_predic.addVar(quant_obj.getVar());
 		obj_predic.setName(obj_word.getLex());
-		quant_obj.getVar().setSourceId(obj_word.getId());
+		quant_obj.getVar().setSourceId(obj_word.getUuid());
 	    }
 	    //Creates object propostion if it exists
 	    if (!obj_word.isBlank() && subj_word.isProposition())
 	    {
 		p2 = new Proposition();
-		p2.setSourceId(obj_word.getId());
+		p2.setSourceId(obj_word.getUuid());
 	    }
 
 	    //Add subject and object variables to predicate (if they exist)
@@ -752,7 +532,7 @@ public class ConllWord implements IWord
     @Override
     public String getConll()
     {
-	return String.join("\n", this.conll_strs.values());
+	return this.conll_string;
     }
 
     @Override
@@ -765,5 +545,239 @@ public class ConllWord implements IWord
     public void setId(Integer id)
     {
 	this.id = id;
+    }
+    
+    @Override
+    public Link getLink()
+    {
+	return this.linktype;
+    }
+
+    @Override
+    public String getWord()
+    {
+	return this.word;
+    }
+
+    @Override
+    public String getLex()
+    {
+	return this.lex;
+    }
+
+    @Override
+    public String getPos()
+    {
+	return this.pos;
+    }
+
+    @Override
+    public String getTense()
+    {
+	return this.tense;
+    }
+
+    @Override
+    public String getCase()
+    {
+	return this.lcase;
+    }
+
+    @Override
+    public String getNumber()
+    {
+	return this.number;
+    }
+
+    @Override
+    public String getVerbRepr()
+    {
+	return this.verberp;
+    }
+
+    @Override
+    public String getVerbMood()
+    {
+	return this.verbmod;
+    }
+
+    @Override
+    public String getAdjForm()
+    {
+	return this.adjform;
+    }
+
+    @Override
+    public String getAdjDegree()
+    {
+	return this.adjdegree;
+    }
+
+    @Override
+    public String getVerbFace()
+    {
+	return this.verbface;
+    }
+
+    @Override
+    public String getGender()
+    {
+	return this.gender;
+    }
+
+    @Override
+    public String getAspect()
+    {
+	return this.aspect;
+    }
+
+    @Override
+    public String getVoice()
+    {
+	return this.voise;
+    }
+
+    @Override
+    public String getAnimacy()
+    {
+	return this.animacity;
+    }
+
+    @Override
+    public String getTransitivity()
+    {
+	return this.transitivity;
+    }
+
+    @Override
+    public String getAdditionalInfo()
+    {
+	return this.addditionalinfo;
+    }
+
+    @Override
+    public Link getLinktype()
+    {
+	return this.linktype;
+    }
+
+    @Override
+    public void setLex(String value)
+    {
+	this.lex = value;
+    }
+
+    @Override
+    public void setPos(String value)
+    {
+	this.pos = value;
+    }
+
+    @Override
+    public void setTense(String value)
+    {
+	this.tense = value;
+    }
+
+    @Override
+    public void setCase(String value)
+    {
+	this.lcase = value;
+    }
+
+    @Override
+    public void setNumber(String value)
+    {
+	this.number = value;
+    }
+
+    @Override
+    public void setVerbRepr(String value)
+    {
+	this.verberp = value;
+    }
+
+    @Override
+    public void setVerbMood(String value)
+    {
+	this.verbmod = value;
+    }
+
+    @Override
+    public void setAdjForm(String value)
+    {
+	this.adjform = value;
+    }
+
+    @Override
+    public void setAdjDegree(String value)
+    {
+	this.adjdegree = value;
+    }
+
+    @Override
+    public void setVerbFace(String value)
+    {
+	this.verbface = value;
+    }
+
+    @Override
+    public void setGender(String value)
+    {
+	this.gender = value;
+    }
+
+    @Override
+    public void setAspect(String value)
+    {
+	this.aspect = value;
+    }
+
+    @Override
+    public void setVoice(String value)
+    {
+	this.voise = value;
+    }
+
+    @Override
+    public void setAnimacy(String value)
+    {
+	this.animacity = value;
+    }
+
+    @Override
+    public void setTransitivity(String value)
+    {
+	this.transitivity = value;
+    }
+
+    @Override
+    public void setAdditionalInfo(String value)
+    {
+	this.addditionalinfo = value;
+    }
+
+    @Override
+    public void setWord(String value)
+    {
+	this.word = value;
+    }
+
+    @Override
+    public void setLinktype(Link link)
+    {
+	this.linktype = link;
+    }
+
+    @Override
+    public void setUuid(String uuid)
+    {
+	this.uuid = uuid;
+    }
+
+    @Override
+    public String getUuid()
+    {
+	return this.uuid;
     }
 }

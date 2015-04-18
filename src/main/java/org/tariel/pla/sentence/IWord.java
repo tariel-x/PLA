@@ -248,6 +248,8 @@ public interface IWord
     public Link getLinktype();
     
     public Integer getId();
+    
+    public String getUuid();
 
     public void setLex(String value);
     
@@ -286,4 +288,6 @@ public interface IWord
     public void setLinktype(Link link);
     
     public void setId(Integer id);
+    
+    public void setUuid(String uuid);
 }
