@@ -18,13 +18,20 @@ package org.tariel.pla.sentence;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.LogicVariable;
 import org.tariel.pla.logics.Proposition;
 import org.tariel.pla.logics.Quantifer;
 import org.tariel.pla.logics.Term;
+import org.tariel.pla.logics.VariableStorage;
+import org.tariel.pla.logics.classic.CQuantifer;
+import org.tariel.pla.logics.classic.CQuantifiedContainer;
+import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
@@ -57,6 +64,9 @@ public class ConllWord implements IWord
     public String other;
 
     public Integer id;
+    public String conll_string = null;
+    private Map<String, String> conll_strings;
+    public String uuid;
 
     @Override
     public List<IWord> getSubWords()
@@ -65,231 +75,19 @@ public class ConllWord implements IWord
     }
 
     @Override
-    public Link getLink()
-    {
-	return this.linktype;
-    }
-
-    @Override
-    public String getWord()
-    {
-	return this.word;
-    }
-
-    @Override
-    public String getLex()
-    {
-	return this.lex;
-    }
-
-    @Override
-    public String getPos()
-    {
-	return this.pos;
-    }
-
-    @Override
-    public String getTense()
-    {
-	return this.tense;
-    }
-
-    @Override
-    public String getCase()
-    {
-	return this.lcase;
-    }
-
-    @Override
-    public String getNumber()
-    {
-	return this.number;
-    }
-
-    @Override
-    public String getVerbRepr()
-    {
-	return this.verberp;
-    }
-
-    @Override
-    public String getVerbMood()
-    {
-	return this.verbmod;
-    }
-
-    @Override
-    public String getAdjForm()
-    {
-	return this.adjform;
-    }
-
-    @Override
-    public String getAdjDegree()
-    {
-	return this.adjdegree;
-    }
-
-    @Override
-    public String getVerbFace()
-    {
-	return this.verbface;
-    }
-
-    @Override
-    public String getGender()
-    {
-	return this.gender;
-    }
-
-    @Override
-    public String getAspect()
-    {
-	return this.aspect;
-    }
-
-    @Override
-    public String getVoice()
-    {
-	return this.voise;
-    }
-
-    @Override
-    public String getAnimacy()
-    {
-	return this.animacity;
-    }
-
-    @Override
-    public String getTransitivity()
-    {
-	return this.transitivity;
-    }
-
-    @Override
-    public String getAdditionalInfo()
-    {
-	return this.addditionalinfo;
-    }
-
-    @Override
-    public Link getLinktype()
-    {
-	return this.linktype;
-    }
-
-    @Override
-    public void setLex(String value)
-    {
-	this.lex = value;
-    }
-
-    @Override
-    public void setPos(String value)
-    {
-	this.pos = value;
-    }
-
-    @Override
-    public void setTense(String value)
-    {
-	this.tense = value;
-    }
-
-    @Override
-    public void setCase(String value)
-    {
-	this.lcase = value;
-    }
-
-    @Override
-    public void setNumber(String value)
-    {
-	this.number = value;
-    }
-
-    @Override
-    public void setVerbRepr(String value)
-    {
-	this.verberp = value;
-    }
-
-    @Override
-    public void setVerbMood(String value)
-    {
-	this.verbmod = value;
-    }
-
-    @Override
-    public void setAdjForm(String value)
-    {
-	this.adjform = value;
-    }
-
-    @Override
-    public void setAdjDegree(String value)
-    {
-	this.adjdegree = value;
-    }
-
-    @Override
-    public void setVerbFace(String value)
-    {
-	this.verbface = value;
-    }
-
-    @Override
-    public void setGender(String value)
-    {
-	this.gender = value;
-    }
-
-    @Override
-    public void setAspect(String value)
-    {
-	this.aspect = value;
-    }
-
-    @Override
-    public void setVoice(String value)
-    {
-	this.voise = value;
-    }
-
-    @Override
-    public void setAnimacy(String value)
-    {
-	this.animacity = value;
-    }
-
-    @Override
-    public void setTransitivity(String value)
-    {
-	this.transitivity = value;
-    }
-
-    @Override
-    public void setAdditionalInfo(String value)
-    {
-	this.addditionalinfo = value;
-    }
-
-    @Override
-    public void setWord(String value)
-    {
-	this.word = value;
-    }
-
-    @Override
-    public void setLinktype(Link link)
-    {
-	this.linktype = link;
-    }
-
-    @Override
     public void fromConll(String conllSentence)
     {
+	this.conll_string = "";
+	this.conll_strings = new HashMap<>();
 	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
+	for (String str : conllstrings)
+	{
+	    String uuid = java.util.UUID.randomUUID().toString();
+	    this.conll_string += str + "\t" + uuid + "\n";
+	    this.conll_strings.put(uuid, str);
+	}
+	conllSentence = this.conll_string;
+	conllstrings = Arrays.asList(conllSentence.split("\n"));
 	//find root
 	int root = 0;
 	for (int i = 0; i < conllstrings.size(); i++)
@@ -310,10 +108,12 @@ public class ConllWord implements IWord
 		    this.pos = "OTHER";
 		}
 		this.decodeParams(parts[5]);
+		this.setUuid(parts[10]);
 		root = i;
 		break;
 	    }
 	}
+	//find another words
 	this.fromConll(conllSentence, root + 1);
     }
 
@@ -393,6 +193,7 @@ public class ConllWord implements IWord
 		    tmp.setPos("OTHER");
 		}
 		tmp.decodeParams(parts[5]);
+		tmp.setUuid(parts[10]);
 		tmp.fromConll(conllSentence, i + 1);
 		this.subwords.add(tmp);
 	    }
@@ -451,16 +252,18 @@ public class ConllWord implements IWord
 		subj_term = new Term();
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
+		quant_subj.getVar().setSourceId(subj_word.getUuid());
+		quant_subj.getVar().setName(subj_word.getLex());
 	    } 
 	    else if (!subj_word.isBlank() && subj_word.isProposition())
 	    {
 		//Creates subject proposition, if it exists
 		p1 = new Proposition();
+		p1.setSourceId(subj_word.getUuid());
 	    }
 	    else
 	    {
 		//nothing will be happened here
-//		return null;
 		//maybe look deeper?
 		IFunction cont = new ConjunctionContainer();
 		cont = this.subsToPla(cont);
@@ -480,11 +283,14 @@ public class ConllWord implements IWord
 		obj_predic = new Term();
 		obj_predic.addVar(quant_obj.getVar());
 		obj_predic.setName(obj_word.getLex());
+		quant_obj.getVar().setSourceId(obj_word.getUuid());
+		quant_obj.getVar().setName(obj_word.getLex());
 	    }
 	    //Creates object propostion if it exists
 	    if (!obj_word.isBlank() && subj_word.isProposition())
 	    {
 		p2 = new Proposition();
+		p2.setSourceId(obj_word.getUuid());
 	    }
 
 	    //Add subject and object variables to predicate (if they exist)
@@ -734,5 +540,300 @@ public class ConllWord implements IWord
 	{
 	    return null;
 	}
+    }
+
+    @Override
+    public String getConll()
+    {
+	return this.conll_string;
+    }
+
+    @Override
+    public Integer getId()
+    {
+	return this.id;
+    }
+
+    @Override
+    public void setId(Integer id)
+    {
+	this.id = id;
+    }
+    
+    @Override
+    public Link getLink()
+    {
+	return this.linktype;
+    }
+
+    @Override
+    public String getWord()
+    {
+	return this.word;
+    }
+
+    @Override
+    public String getLex()
+    {
+	return this.lex;
+    }
+
+    @Override
+    public String getPos()
+    {
+	return this.pos;
+    }
+
+    @Override
+    public String getTense()
+    {
+	return this.tense;
+    }
+
+    @Override
+    public String getCase()
+    {
+	return this.lcase;
+    }
+
+    @Override
+    public String getNumber()
+    {
+	return this.number;
+    }
+
+    @Override
+    public String getVerbRepr()
+    {
+	return this.verberp;
+    }
+
+    @Override
+    public String getVerbMood()
+    {
+	return this.verbmod;
+    }
+
+    @Override
+    public String getAdjForm()
+    {
+	return this.adjform;
+    }
+
+    @Override
+    public String getAdjDegree()
+    {
+	return this.adjdegree;
+    }
+
+    @Override
+    public String getVerbFace()
+    {
+	return this.verbface;
+    }
+
+    @Override
+    public String getGender()
+    {
+	return this.gender;
+    }
+
+    @Override
+    public String getAspect()
+    {
+	return this.aspect;
+    }
+
+    @Override
+    public String getVoice()
+    {
+	return this.voise;
+    }
+
+    @Override
+    public String getAnimacy()
+    {
+	return this.animacity;
+    }
+
+    @Override
+    public String getTransitivity()
+    {
+	return this.transitivity;
+    }
+
+    @Override
+    public String getAdditionalInfo()
+    {
+	return this.addditionalinfo;
+    }
+
+    @Override
+    public Link getLinktype()
+    {
+	return this.linktype;
+    }
+
+    @Override
+    public void setLex(String value)
+    {
+	this.lex = value;
+    }
+
+    @Override
+    public void setPos(String value)
+    {
+	this.pos = value;
+    }
+
+    @Override
+    public void setTense(String value)
+    {
+	this.tense = value;
+    }
+
+    @Override
+    public void setCase(String value)
+    {
+	this.lcase = value;
+    }
+
+    @Override
+    public void setNumber(String value)
+    {
+	this.number = value;
+    }
+
+    @Override
+    public void setVerbRepr(String value)
+    {
+	this.verberp = value;
+    }
+
+    @Override
+    public void setVerbMood(String value)
+    {
+	this.verbmod = value;
+    }
+
+    @Override
+    public void setAdjForm(String value)
+    {
+	this.adjform = value;
+    }
+
+    @Override
+    public void setAdjDegree(String value)
+    {
+	this.adjdegree = value;
+    }
+
+    @Override
+    public void setVerbFace(String value)
+    {
+	this.verbface = value;
+    }
+
+    @Override
+    public void setGender(String value)
+    {
+	this.gender = value;
+    }
+
+    @Override
+    public void setAspect(String value)
+    {
+	this.aspect = value;
+    }
+
+    @Override
+    public void setVoice(String value)
+    {
+	this.voise = value;
+    }
+
+    @Override
+    public void setAnimacy(String value)
+    {
+	this.animacity = value;
+    }
+
+    @Override
+    public void setTransitivity(String value)
+    {
+	this.transitivity = value;
+    }
+
+    @Override
+    public void setAdditionalInfo(String value)
+    {
+	this.addditionalinfo = value;
+    }
+
+    @Override
+    public void setWord(String value)
+    {
+	this.word = value;
+    }
+
+    @Override
+    public void setLinktype(Link link)
+    {
+	this.linktype = link;
+    }
+
+    @Override
+    public void setUuid(String uuid)
+    {
+	this.uuid = uuid;
+    }
+
+    @Override
+    public String getUuid()
+    {
+	return this.uuid;
+    }
+
+    @Override
+    public String resolveAnaphora(ICFunction func)
+    {
+	List<Proposition> props = VariableStorage.getPopostionList();
+	//if we get quantified formula - set each next var to each next prop
+	if (func.getClass().getTypeName().equals("org.tariel.pla.logics.classic.CQuantifiedContainer"))
+	{
+	    String ret = "";
+    
+	    List<String> conllstrings = Arrays.asList(this.conll_string.split("\n"));
+	    for (String str : conllstrings)
+	    {
+		String[] parts = str.split("\t");
+		ret += " " + parts[1];
+		Proposition prop = VariableStorage.getPropByUuid(parts[10]);
+		LogicVariable linked_var = VariableStorage.getVarByUuid((String)prop.getLinkedId());
+		if (!prop.isEmpty())
+		{
+		    ret += "<" + linked_var.getName() + ">";
+		}
+		    
+	    }
+	    return ret;
+	}
+	else
+	{
+	    return this.getSentence();
+	}
+    }
+
+    @Override
+    public String getSentence()
+    {
+	String ret = "";
+	List<String> conllstrings = Arrays.asList(this.conll_string.split("\n"));
+	for (String str : conllstrings)
+	{
+	    String[] parts = str.split("\t");
+	    ret += parts[1] + " ";
+	}
+	return ret;
     }
 }

@@ -38,6 +38,8 @@ public class App
 	pla_inst.toClassicLogics();
 	String classic_ret = pla_inst.toClassicLogicsString();
 	System.out.println(classic_ret);
+	String final_sent = pla_inst.processAnaphora();
+	System.out.println(final_sent);
 	System.out.println("fin");
     }
     

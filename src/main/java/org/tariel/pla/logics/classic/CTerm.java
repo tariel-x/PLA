@@ -82,5 +82,11 @@ public class CTerm implements ICFunction
     {
 	throw new UnsupportedOperationException("Not supported.");
     }
+
+    @Override
+    public void resolveAnaphora()
+    {
+	throw new UnsupportedOperationException("Not supported.");
+    }
     
 }

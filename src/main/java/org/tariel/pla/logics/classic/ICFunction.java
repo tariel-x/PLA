@@ -35,4 +35,6 @@ public interface ICFunction
      * @return string
      */
     public String toStrRepresentation();
+    
+    public void resolveAnaphora();
 }

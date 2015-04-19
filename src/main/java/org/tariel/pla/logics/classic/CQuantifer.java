@@ -69,4 +69,10 @@ public class CQuantifer implements ICFunction
 	String ret = "∃" + this.getVar().toStrRepresentation();
 	return ret;
     }
+
+    @Override
+    public void resolveAnaphora()
+    {
+	throw new UnsupportedOperationException("Not supported.");
+    }
 }

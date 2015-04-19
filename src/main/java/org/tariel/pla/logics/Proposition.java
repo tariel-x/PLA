@@ -24,10 +24,11 @@ package org.tariel.pla.logics;
 public class Proposition implements IVariable
 {
     private String name;
+    private Object source_id;
+    private Object linked_id;
     
     public Proposition()
     {
-	this.setName(java.util.UUID.randomUUID().toString());
     }
 
     @Override
@@ -45,6 +46,39 @@ public class Proposition implements IVariable
     @Override
     public String toStrRepresentation()
     {
-	return VariableStorage.getProposition(this.getName());
+	return VariableStorage.getProposition(this);
+    }
+
+    @Override
+    public Object getSourceId()
+    {
+	return source_id;
+    }
+
+    @Override
+    public void setSourceId(Object id)
+    {
+	source_id = id;
+    }
+
+    @Override
+    public Boolean isEmpty()
+    {
+	if (this.source_id == null)
+	    return true;
+	else
+	    return false;
+    }
+
+    @Override
+    public Object getLinkedId()
+    {
+	return linked_id;
+    }
+
+    @Override
+    public void setLinkedId(Object id)
+    {
+	linked_id = id;
     }
 }

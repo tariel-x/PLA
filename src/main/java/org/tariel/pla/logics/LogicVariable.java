@@ -24,6 +24,7 @@ public class LogicVariable implements IVariable
 {
     
     private String name;
+    private Object source_id;
 
     @Override
     public void setName(String name)
@@ -40,7 +41,40 @@ public class LogicVariable implements IVariable
     @Override
     public String toStrRepresentation()
     {
-	return VariableStorage.getVar(this.getName());
+	return VariableStorage.getVar(this);
+    }
+
+    @Override
+    public Object getSourceId()
+    {
+	return source_id;
+    }
+
+    @Override
+    public void setSourceId(Object id)
+    {
+	source_id = id;
+    }
+
+    @Override
+    public Boolean isEmpty()
+    {
+	if (this.source_id == null)
+	    return true;
+	else
+	    return false;
+    }
+
+    @Override
+    public Object getLinkedId()
+    {
+	throw new UnsupportedOperationException("Not supported."); 
+    }
+
+    @Override
+    public void setLinkedId(Object id)
+    {
+	throw new UnsupportedOperationException("Not supported .");
     }
     
 }
