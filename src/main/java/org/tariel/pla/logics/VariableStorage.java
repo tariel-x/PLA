@@ -26,38 +26,61 @@ import java.util.ArrayList;
  */
 public class VariableStorage
 {
-    private static Map<String, String> vars = new HashMap<>();
-    private static Map<String, String> propositions = new HashMap<>();
-    
-    public static String getVar(String hash)
+    private static Map<String, String> vars_names = new HashMap<>();
+    private static Map<String, String> propositions_names = new HashMap<>();
+    private static Map<String, Proposition> prop_map = new HashMap<>();
+    private static List<Proposition> prop_index = new ArrayList<>();
+
+    public VariableStorage()
     {
-	if (vars.containsKey(hash))
+    }
+    
+    public static String getVar(LogicVariable var)
+    {
+	if (vars_names.containsKey(var.getSourceId()))
 	{
-	    return vars.get(hash);
+	    return vars_names.get(var.getSourceId());
 	}
 	else
 	{
-	    vars.put(hash, String.copyValueOf(Character.toChars(97 + vars.size())));
-	    return vars.get(hash);
+	    vars_names.put((String)var.getSourceId(), 
+		    String.copyValueOf(Character.toChars(97 + vars_names.size())));
+	    return vars_names.get(var.getSourceId());
 	}
     }
     
-    public static String getProposition(String hash)
+    public static String getProposition(Proposition prop)
     {
-	if (propositions.containsKey(hash))
+	if (propositions_names.containsKey(prop.getSourceId()))
 	{
-	    return propositions.get(hash);
+	    return propositions_names.get(prop.getSourceId());
 	}
 	else
 	{
-	    propositions.put(hash, "p"+String.valueOf(propositions.size()));
-	    return propositions.get(hash);
+	    prop_index.add(prop);
+	    prop_map.put((String)prop.getSourceId(), prop);
+	    propositions_names.put((String)prop.getSourceId(), "p"+
+		    String.valueOf(propositions_names.size()));
+	    return propositions_names.get(prop.getSourceId());
 	}
+    }
+    
+    public static Proposition getPropByUuid(String uuid)
+    {
+	if (prop_map.containsKey(uuid))
+	    return prop_map.get(uuid);
+	else
+	    return new Proposition();	
+    }
+    
+    public static List<Proposition> getPopostionList()
+    {
+	return prop_index;
     }
     
     public static void clear()
     {
-	vars = new HashMap<>();
-	propositions = new HashMap<>();
+	vars_names = new HashMap<>();
+	propositions_names = new HashMap<>();
     }
 }

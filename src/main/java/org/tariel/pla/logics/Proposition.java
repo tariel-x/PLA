@@ -28,7 +28,6 @@ public class Proposition implements IVariable
     
     public Proposition()
     {
-	this.setName(java.util.UUID.randomUUID().toString());
     }
 
     @Override
@@ -46,7 +45,7 @@ public class Proposition implements IVariable
     @Override
     public String toStrRepresentation()
     {
-	return VariableStorage.getProposition(this.getName());
+	return VariableStorage.getProposition(this);
     }
 
     @Override
@@ -59,5 +58,14 @@ public class Proposition implements IVariable
     public void setSourceId(Object id)
     {
 	source_id = id;
+    }
+
+    @Override
+    public Boolean isEmpty()
+    {
+	if (this.source_id == null)
+	    return true;
+	else
+	    return false;
     }
 }

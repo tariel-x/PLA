@@ -63,4 +63,10 @@ public class CConjunctionContainer implements ICFunction
 	this.sub_functions = new ArrayList<>();
     }
 
+    @Override
+    public void resolveAnaphora()
+    {
+	throw new UnsupportedOperationException("Not supported.");
+    }
+
 }

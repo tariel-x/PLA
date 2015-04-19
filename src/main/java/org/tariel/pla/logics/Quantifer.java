@@ -36,7 +36,6 @@ public class Quantifer implements IFunction
     public Quantifer()
     {
 	this.var = new LogicVariable();
-	this.var.setName(java.util.UUID.randomUUID().toString());
 	this.sub_functions = new ArrayList<>();
     }
     

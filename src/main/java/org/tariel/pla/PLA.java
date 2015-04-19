@@ -15,6 +15,8 @@
  */
 package org.tariel.pla;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
 import org.tariel.pla.logics.VariableStorage;
@@ -30,10 +32,12 @@ public class PLA
 {
     private ConjunctionContainer func;
     private ICFunction classic_func;
+    private List<IWord> sentences;
     
     public PLA()
     {
 	func = new ConjunctionContainer();
+	sentences = new ArrayList<>();
     }
     
     public void fromConll(String conll)
@@ -42,6 +46,7 @@ public class PLA
 	func = new ConjunctionContainer();
 	IWord word = new ConllWord();
 	word.fromConll(conll);
+	this.sentences.add(word);
 	func.addSub(word.toPLA());
     }
     
@@ -70,6 +75,19 @@ public class PLA
     {
 	IWord word = new ConllWord();
 	word.fromConll(conll);
+	this.sentences.add(word);
 	func.addSub(word.toPLA());
+    }
+    
+    public String processAnaphora()
+    {
+	classic_func.resolveAnaphora();
+	String ret = "";
+	for (IWord sentence : this.sentences)
+	{
+	    ret += sentence.resolveAnaphora(classic_func);
+	    ret += ". ";
+	}
+	return ret;
     }
 }

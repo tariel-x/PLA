@@ -17,7 +17,10 @@
 package org.tariel.pla.logics.classic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.tariel.pla.logics.Proposition;
+import org.tariel.pla.logics.VariableStorage;
 
 /**
  *
@@ -84,5 +87,16 @@ public class CQuantifiedContainer implements ICFunction
     public void cleanQuantifers()
     {
 	this.quantifers = new ArrayList<>();
+    }
+
+    @Override
+    public void resolveAnaphora()
+    {
+	List<Proposition> props = VariableStorage.getPopostionList();
+	for (CQuantifer quant : this.getQuantifers())
+	{
+	    VariableStorage.getPopostionList().iterator().next()
+		    .setName((String)quant.getVar().getSourceId());
+	}
     }
 }

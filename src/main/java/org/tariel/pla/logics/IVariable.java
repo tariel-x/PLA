@@ -44,4 +44,6 @@ public interface IVariable
      * @return string
      */
     public String toStrRepresentation();
+    
+    public Boolean isEmpty();
 }

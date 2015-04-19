@@ -41,7 +41,7 @@ public class LogicVariable implements IVariable
     @Override
     public String toStrRepresentation()
     {
-	return VariableStorage.getVar(this.getName());
+	return VariableStorage.getVar(this);
     }
 
     @Override
@@ -54,6 +54,15 @@ public class LogicVariable implements IVariable
     public void setSourceId(Object id)
     {
 	source_id = id;
+    }
+
+    @Override
+    public Boolean isEmpty()
+    {
+	if (this.source_id == null)
+	    return true;
+	else
+	    return false;
     }
     
 }

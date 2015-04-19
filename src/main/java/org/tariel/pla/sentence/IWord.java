@@ -18,6 +18,7 @@ package org.tariel.pla.sentence;
 import java.util.ArrayList;
 import java.util.List;
 import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
@@ -200,6 +201,13 @@ public interface IWord
      * @return PLA formula from subwords
      */
     public IFunction toSubPLA();
+    
+    /**
+     * Applies classic logics formula to conll string
+     * @param func
+     * @return final text
+     */
+    public String resolveAnaphora(ICFunction func);
 
     /**
      * Get origin word
@@ -250,6 +258,8 @@ public interface IWord
     public Integer getId();
     
     public String getUuid();
+    
+    public String getSentence();
 
     public void setLex(String value);
     

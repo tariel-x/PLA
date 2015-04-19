@@ -18,13 +18,19 @@ package org.tariel.pla.sentence;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
 import org.tariel.pla.logics.Proposition;
 import org.tariel.pla.logics.Quantifer;
 import org.tariel.pla.logics.Term;
+import org.tariel.pla.logics.VariableStorage;
+import org.tariel.pla.logics.classic.CQuantifer;
+import org.tariel.pla.logics.classic.CQuantifiedContainer;
+import org.tariel.pla.logics.classic.ICFunction;
 
 /**
  *
@@ -58,6 +64,7 @@ public class ConllWord implements IWord
 
     public Integer id;
     public String conll_string = null;
+    private Map<String, String> conll_strings;
     public String uuid;
 
     @Override
@@ -70,10 +77,13 @@ public class ConllWord implements IWord
     public void fromConll(String conllSentence)
     {
 	this.conll_string = "";
+	this.conll_strings = new HashMap<>();
 	List<String> conllstrings = Arrays.asList(conllSentence.split("\n"));
 	for (String str : conllstrings)
 	{
-	    this.conll_string += str + "\t" + java.util.UUID.randomUUID().toString() + "\n";
+	    String uuid = java.util.UUID.randomUUID().toString();
+	    this.conll_string += str + "\t" + uuid + "\n";
+	    this.conll_strings.put(uuid, str);
 	}
 	conllSentence = this.conll_string;
 	conllstrings = Arrays.asList(conllSentence.split("\n"));
@@ -779,5 +789,47 @@ public class ConllWord implements IWord
     public String getUuid()
     {
 	return this.uuid;
+    }
+
+    @Override
+    public String resolveAnaphora(ICFunction func)
+    {
+	List<Proposition> props = VariableStorage.getPopostionList();
+	//if we get quantified formula - set each next var to each next prop
+	if (func.getClass().getTypeName().equals("org.tariel.pla.logics.classic.CQuantifiedContainer"))
+	{
+	    String ret = "";
+    
+	    List<String> conllstrings = Arrays.asList(this.conll_string.split("\n"));
+	    for (String str : conllstrings)
+	    {
+		String[] parts = str.split("\t");
+		ret += " " + parts[1];
+		Proposition prop = VariableStorage.getPropByUuid(parts[10]);
+		if (!prop.isEmpty())
+		{
+		    ret += "<" + prop.getName() + ">";
+		}
+		    
+	    }
+	    return ret;
+	}
+	else
+	{
+	    return this.getSentence();
+	}
+    }
+
+    @Override
+    public String getSentence()
+    {
+	String ret = "";
+	List<String> conllstrings = Arrays.asList(this.conll_string.split("\n"));
+	for (String str : conllstrings)
+	{
+	    String[] parts = str.split("\t");
+	    ret += parts[1] + " ";
+	}
+	return ret;
     }
 }
