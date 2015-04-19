@@ -25,6 +25,7 @@ public class Proposition implements IVariable
 {
     private String name;
     private Object source_id;
+    private Object linked_id;
     
     public Proposition()
     {
@@ -67,5 +68,17 @@ public class Proposition implements IVariable
 	    return true;
 	else
 	    return false;
+    }
+
+    @Override
+    public Object getLinkedId()
+    {
+	return linked_id;
+    }
+
+    @Override
+    public void setLinkedId(Object id)
+    {
+	linked_id = id;
     }
 }

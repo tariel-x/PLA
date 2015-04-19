@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class VariableStorage
 {
     private static Map<String, String> vars_names = new HashMap<>();
+    private static Map<String, LogicVariable> var_map = new HashMap<>();
     private static Map<String, String> propositions_names = new HashMap<>();
     private static Map<String, Proposition> prop_map = new HashMap<>();
     private static List<Proposition> prop_index = new ArrayList<>();
@@ -43,6 +44,7 @@ public class VariableStorage
 	}
 	else
 	{
+	    var_map.put((String)var.getSourceId(), var);
 	    vars_names.put((String)var.getSourceId(), 
 		    String.copyValueOf(Character.toChars(97 + vars_names.size())));
 	    return vars_names.get(var.getSourceId());
@@ -65,6 +67,19 @@ public class VariableStorage
 	}
     }
     
+    public static LogicVariable getVarByUuid(String uuid)
+    {
+	if (var_map.containsKey(uuid))
+	    return var_map.get(uuid);
+	else
+	    return new LogicVariable();	
+    }
+    
+    public static List<Proposition> getPopostionList()
+    {
+	return prop_index;
+    }
+    
     public static Proposition getPropByUuid(String uuid)
     {
 	if (prop_map.containsKey(uuid))
@@ -73,14 +88,13 @@ public class VariableStorage
 	    return new Proposition();	
     }
     
-    public static List<Proposition> getPopostionList()
-    {
-	return prop_index;
-    }
-    
     public static void clear()
     {
 	vars_names = new HashMap<>();
+	var_map = new HashMap<>();
 	propositions_names = new HashMap<>();
+	prop_map = new HashMap<>();
+	prop_index = new ArrayList<>();
+	
     }
 }

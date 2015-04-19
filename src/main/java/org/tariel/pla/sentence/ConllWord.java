@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.tariel.pla.logics.ConjunctionContainer;
 import org.tariel.pla.logics.IFunction;
+import org.tariel.pla.logics.LogicVariable;
 import org.tariel.pla.logics.Proposition;
 import org.tariel.pla.logics.Quantifer;
 import org.tariel.pla.logics.Term;
@@ -252,6 +253,7 @@ public class ConllWord implements IWord
 		subj_term.addVar(quant_subj.getVar());
 		subj_term.setName(subj_word.getLex());
 		quant_subj.getVar().setSourceId(subj_word.getUuid());
+		quant_subj.getVar().setName(subj_word.getLex());
 	    } 
 	    else if (!subj_word.isBlank() && subj_word.isProposition())
 	    {
@@ -282,6 +284,7 @@ public class ConllWord implements IWord
 		obj_predic.addVar(quant_obj.getVar());
 		obj_predic.setName(obj_word.getLex());
 		quant_obj.getVar().setSourceId(obj_word.getUuid());
+		quant_obj.getVar().setName(obj_word.getLex());
 	    }
 	    //Creates object propostion if it exists
 	    if (!obj_word.isBlank() && subj_word.isProposition())
@@ -806,9 +809,10 @@ public class ConllWord implements IWord
 		String[] parts = str.split("\t");
 		ret += " " + parts[1];
 		Proposition prop = VariableStorage.getPropByUuid(parts[10]);
+		LogicVariable linked_var = VariableStorage.getVarByUuid((String)prop.getLinkedId());
 		if (!prop.isEmpty())
 		{
-		    ret += "<" + prop.getName() + ">";
+		    ret += "<" + linked_var.getName() + ">";
 		}
 		    
 	    }

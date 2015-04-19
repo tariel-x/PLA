@@ -64,5 +64,17 @@ public class LogicVariable implements IVariable
 	else
 	    return false;
     }
+
+    @Override
+    public Object getLinkedId()
+    {
+	throw new UnsupportedOperationException("Not supported."); 
+    }
+
+    @Override
+    public void setLinkedId(Object id)
+    {
+	throw new UnsupportedOperationException("Not supported .");
+    }
     
 }

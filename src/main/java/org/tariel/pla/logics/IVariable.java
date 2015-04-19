@@ -40,6 +40,19 @@ public interface IVariable
     public void setSourceId(Object id);
     
     /**
+     * Returns id of word in the source text (Conll, etc)
+     * Interger for Conll
+     * @return 
+     */
+    public Object getLinkedId();
+    
+    /**
+     * Sets id from source text
+     * @param id 
+     */
+    public void setLinkedId(Object id);
+    
+    /**
      * Produces string representation of logic variable
      * @return string
      */

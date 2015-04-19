@@ -93,10 +93,14 @@ public class CQuantifiedContainer implements ICFunction
     public void resolveAnaphora()
     {
 	List<Proposition> props = VariableStorage.getPopostionList();
+	int i = 0;
 	for (CQuantifer quant : this.getQuantifers())
 	{
-	    VariableStorage.getPopostionList().iterator().next()
-		    .setName((String)quant.getVar().getSourceId());
+	    if (i <= props.size())
+		props.get(i).setLinkedId((String)quant.getVar().getSourceId());
+	    i++;
+//	    VariableStorage.getPopostionList().iterator().next()
+//		    .setLinkedId((String)quant.getVar().getSourceId());
 	}
     }
 }
