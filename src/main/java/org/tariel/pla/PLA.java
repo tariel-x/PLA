@@ -86,8 +86,8 @@ public class PLA
 	for (IWord sentence : this.sentences)
 	{
 	    ret += sentence.resolveAnaphora(classic_func);
-	    ret += ". ";
+	    ret += ".";
 	}
-	return ret;
+	return ret.trim();
     }
 }
