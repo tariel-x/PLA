@@ -15,6 +15,7 @@
  */
 package org.tariel.pla.logics.classic;
 
+import com.sun.org.apache.bcel.internal.generic.IFEQ;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,10 @@ public class CConjunctionContainer implements ICFunction
     @Override
     public void resolveAnaphora()
     {
-	throw new UnsupportedOperationException("Not supported.");
+	for (ICFunction sub : this.getSub())
+	{
+	    sub.resolveAnaphora();
+	}
     }
 
 }

@@ -96,7 +96,7 @@ public class CQuantifiedContainer implements ICFunction
 	int i = 0;
 	for (CQuantifer quant : this.getQuantifers())
 	{
-	    if (i <= props.size())
+	    if (i < props.size())
 		props.get(i).setLinkedId((String)quant.getVar().getSourceId());
 	    i++;
 //	    VariableStorage.getPopostionList().iterator().next()

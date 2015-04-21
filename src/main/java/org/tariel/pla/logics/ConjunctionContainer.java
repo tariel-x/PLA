@@ -52,7 +52,8 @@ public class ConjunctionContainer implements IFunction
 	List<String> sub_strs = new ArrayList<>();
 	for (IFunction sub: this.getSub())
 	{
-	    sub_strs.add(sub.toStrRepresentation());
+	    if (sub != null)
+		sub_strs.add(sub.toStrRepresentation());
 	}
 	result = String.join(" ⋀ ", sub_strs);
 	return result;
@@ -64,9 +65,12 @@ public class ConjunctionContainer implements IFunction
 	
 	List<CQuantifer> reverse_quants = new ArrayList<>();
 	List<ICFunction> new_subfunctions = new ArrayList<>();
+	
 	for (IFunction sub : this.getSub())
 	{
 	    //Make classic logics from subfunctions
+	    if (sub == null)
+		continue;
 	    ICFunction tmp_classic = sub.toClassicLogic();
 	    if (tmp_classic.getClass().getTypeName().equals("org.tariel.pla.logics.classic.CQuantifiedContainer"))
 	    {
