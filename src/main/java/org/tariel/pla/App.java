@@ -33,8 +33,8 @@ public class App
 "5	она	она	SPRO	SPRO	SG|3P|F	6	SUBJ	_	_\n" +
 "6	рассердилась	рассердиться	V	V	PST|SG|REAL|F|PERF	4	ROOT	_	_");
 	
-	String ret = pla_inst.toLogicsString();
-	System.out.println(ret);
+//	String ret = pla_inst.toLogicsString();
+//	System.out.println(ret);
 	pla_inst.toClassicLogics();
 	String classic_ret = pla_inst.toClassicLogicsString();
 	System.out.println(classic_ret);

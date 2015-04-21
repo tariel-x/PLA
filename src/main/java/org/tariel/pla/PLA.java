@@ -43,6 +43,7 @@ public class PLA
     public void fromConll(String conll)
     {
 	VariableStorage.clear();
+	sentences = new ArrayList<>();
 	func = new ConjunctionContainer();
 	IWord word = new ConllWord();
 	word.fromConll(conll);
